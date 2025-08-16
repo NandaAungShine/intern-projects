@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta charset="utf-8" />
+    <title>Travel Management Dashboard</title>
+   <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+<section id="destinations-section" class="section destinations">
+  <h2 class="section-title">Manage Destinations</h2>
+
+  <header class="section-header">
+    <h3 class="section-subtitle">Destinations Overview</h3>
+
+    <div class="search-group">
+      <input type="search" class="search-input" placeholder="Search Destinations...">
+      <select class="filter-select filter-dropdown" id="filter-country">
+        <option value="">All Countries</option>
+        <option value="USA">United States</option>
+        <option value="France">France</option>
+        <option value="Japan">Japan</option>
+        <option value="Australia">Australia</option>
+      </select>
+      <select class="filter-select filter-dropdown" id="filter-season">
+        <option value="">All Seasons</option>
+        <option value="Spring">Spring</option>
+        <option value="Summer">Summer</option>
+        <option value="Autumn">Autumn</option>
+        <option value="Winter">Winter</option>
+      </select>
+      <button class="primary-btn" id="add-destination-toggle">Add New Destination</button>
+      <button class="secondary-btn">See All Destinations</button>
+    </div>
+  </header>
+
+  <div class="cards-grid">
+    <article class="card"
+             data-id="dest001"
+             data-name="Thrilling Water Sliding"
+             data-country="USA"
+             data-season="Summer"
+             data-description="Experience the rush of exhilarating water slides and refreshing pools. Perfect for a fun-filled family getaway!"
+             data-contact="+1 (555) 123-4567"
+             data-image="Photo/P1.jpg"
+             data-tags="fun, family, waterpark">
+      <img class="card-img" src="Photo/P1.jpg" alt="Water sliding">
+      <button class="edit-btn" data-type="destination">Edit</button>
+      <h4 class="card-title">Thrilling Water Sliding</h4>
+      <div class="card-content">
+        <p class="card-desc">
+          Experience the rush of exhilarating water slides and refreshing pools. Perfect for a fun-filled family getaway!
+        </p>
+        <span class="contact">📞 Contact Us: +1 (555) 123-4567</span>
+      </div>
+    </article>
+
+    <article class="card"
+             data-id="dest002"
+             data-name="Deep Sea Scuba Diving"
+             data-country="Australia"
+             data-season="Summer"
+             data-description="Dive into crystal-clear waters and explore vibrant marine life. An unforgettable adventure for ocean lovers."
+             data-contact="+61 (02) 9876 5432"
+             data-image="Photo/P2.jpg"
+             data-tags="adventure, ocean, marine">
+      <img class="card-img" src="Photo/P2.jpg" alt="Scuba diving">
+      <button class="edit-btn" data-type="destination">Edit</button>
+      <h4 class="card-title">Deep Sea Scuba Diving</h4>
+      <div class="card-content">
+        <p class="card-desc">
+          Dive into crystal-clear waters and explore vibrant marine life. An unforgettable adventure for ocean lovers.
+        </p>
+        <span class="contact">📞 Contact Us: +61 (02) 9876 5432</span>
+      </div>
+    </article>
+
+    <article class="card"
+             data-id="dest003"
+             data-name="Majestic Mountain Treks"
+             data-country="Japan"
+             data-season="Autumn"
+             data-description="Discover awe-inspiring peaks and challenging trails with this breathtaking mountain adventure."
+             data-contact="+81 (03) 1234 5678"
+             data-image="Photo/P3.jpg"
+             data-tags="mountain, hiking, nature">
+      <img class="card-img" src="Photo/P3.jpg" alt="Mountain Adventures">
+      <button class="edit-btn" data-type="destination">Edit</button>
+      <h4 class="card-title">Majestic Mountain Treks</h4>
+      <div class="card-content">
+        <p class="card-desc">
+          Discover awe-inspiring peaks and challenging trails with this breathtaking mountain adventure.
+        </p>
+        <span class="contact">📞 Contact Us: +81 (03) 1234 5678</span>
+      </div>
+    </article>
+
+     <article class="card"
+             data-id="dest004"
+             data-name="Desert Safari Thrills"
+             data-country="UAE"
+             data-season="Winter"
+             data-description="Embark on an exciting desert safari, witness stunning sunsets, and experience traditional Bedouin culture."
+             data-contact="+971 (4) 555-9999"
+             data-image="Photo/P4.jpg"
+             data-tags="desert, safari, culture">
+      <img class="card-img" src="Photo/P4.jpg" alt="Desert Safari">
+      <button class="edit-btn" data-type="destination">Edit</button>
+      <h4 class="card-title">Desert Safari Thrills</h4>
+      <div class="card-content">
+        <p class="card-desc">
+          Embark on an exciting desert safari, witness stunning sunsets, and experience traditional Bedouin culture.
+        </p>
+        <span class="contact">📞 Contact Us: +971 (4) 555-9999</span>
+      </div>
+    </article>
+  </div>
+
+  <form id="add-destination-form" class="add-form hidden">
+    <div class="form-header">
+      <h3 id="destination-form-title">Add New Destination</h3>
+      <button type="button" class="close-btn" id="close-destination-form">&times;</button>
+    </div>
+
+    <input type="hidden" id="destination-edit-id" name="id">
+
+    <label>
+      Destination Name*
+      <input type="text" name="name" required placeholder="e.g., Grand Canyon, Paris" id="destination-name">
+    </label>
+
+    <label>
+      Contact Number
+      <input type="tel" name="contact" placeholder="e.g., +123 456 7890" id="destination-contact">
+    </label>
+
+    <label>
+      Tags / Highlights
+      <input type="text" name="tags" placeholder="e.g., historical, beach, adventurous (comma-separated)" id="destination-tags">
+    </label>
+
+    <label>
+      Description
+      <textarea name="description" rows="4" placeholder="Describe this Destination in detail..." id="destination-description"></textarea>
+    </label>
+
+    <label>
+      Upload Images
+      <div class="file-upload-container">
+        <input type="file" multiple accept="image/*" id="destination-image-upload">
+        <div class="file-upload-content">
+          <button type="button" class="file-upload-button">Browse...</button>
+          <span class="file-upload-text" id="destination-file-status">No files selected.</span>
+          <small>Click to upload or drag and drop images<br>Multiple files Supported (PNG, JPG, JPEG)</small>
+        </div>
+      </div>
+      <div id="destination-current-image-preview" style="margin-top: 10px; display: none;">
+        <p>Current Image:</p>
+        <img id="destination-current-image" src="" alt="Current Destination Image" style="max-width: 200px; height: auto; border-radius: var(--radius-sm);">
+      </div>
+    </label>
+
+    <label>
+      Country*
+      <select name="country" required id="destination-country">
+        <option value="">Select Country</option>
+        <option value="USA">United States</option>
+        <option value="France">France</option>
+        <option value="Japan">Japan</option>
+        <option value="Australia">Australia</option>
+        <option value="UAE">UAE</option>
+      </select>
+    </label>
+
+    <label>
+      Recommended Season
+      <select name="season" id="destination-season">
+        <option value="">Select Season</option>
+        <option value="Spring">Spring</option>
+        <option value="Summer">Summer</option>
+        <option value="Autumn">Autumn</option>
+        <option value="Winter">Winter</option>
+      </select>
+    </label>
+
+    <div class="form-actions">
+      <button type="button" class="btn cancel-btn" id="cancel-destination-add">Cancel</button>
+      <button type="submit" class="btn save-btn">Save Destination</button>
+    </div>
+  </form>
+</section>
+
+---
+
+<section id="hotels-section" class="section hotels">
+  <h2 class="section-title">Manage Hotels</h2>
+
+  <header class="section-header">
+    <h3 class="section-subtitle">Hotels Overview</h3>
+
+    <div class="search-group">
+      <input type="search" class="search-input" placeholder="Search Hotels...">
+      <select class="filter-select filter-dropdown" id="filter-hotel-destination">
+        <option value="">All Destinations</option>
+        <option value="Paris">Paris</option>
+        <option value="New York">New York</option>
+        <option value="Tokyo">Tokyo</option>
+      </select>
+      <select class="filter-select filter-dropdown" id="filter-rating">
+        <option value="">All Ratings</option>
+        <option value="1">1 Star</option>
+        <option value="2">2 Stars</option>
+        <option value="3">3 Stars</option>
+        <option value="4">4 Stars</option>
+        <option value="5">5 Stars</option>
+      </select>
+      <button class="primary-btn" id="add-hotel-toggle">Add New Hotel</button>
+      <button class="secondary-btn">See All Hotels</button>
+    </div>
+  </header>
+
+  <div class="cards-grid">
+    <article class="card"
+             data-id="hot001"
+             data-name="Grand Lux Hotel"
+             data-destination="Paris"
+             data-rating="5"
+             data-minprice="250"
+             data-maxprice="800"
+             data-roomtypes="Standard Double,Suite,Penthouse"
+             data-amenities="Free WiFi,Swimming Pool,Restaurant,Breakfast Included,Concierge Service,Fitness Center"
+             data-description="A five-star luxury resort offering unparalleled comfort and world-class amenities in a stunning location."
+             data-contact="+33 (0)1 23 45 67 89"
+             data-image="Photo/P5.jpg">
+      <img class="card-img" src="Photo/P5.jpg" alt="Luxury Resort">
+      <button class="edit-btn" data-type="hotel">Edit</button>
+      <h4 class="card-title">Grand Lux Hotel</h4>
+      <div class="card-content">
+        <p class="card-desc">
+          A five-star luxury resort offering unparalleled comfort and world-class amenities in a stunning location.
+        </p>
+        <span class="contact">📞 Contact Us: +33 (0)1 23 45 67 89</span>
+      </div>
+    </article>
+
+    <article class="card"
+             data-id="hot002"
+             data-name="The Cozy Boutique"
+             data-destination="New York"
+             data-rating="4"
+             data-minprice="150"
+             data-maxprice="300"
+             data-roomtypes="Standard,Deluxe"
+             data-amenities="Free WiFi,Breakfast Included,Bar/Lounge,Pet Friendly"
+             data-description="Charming boutique hotel with unique decor and personalized service, perfect for a romantic getaway."
+             data-contact="+1 (212) 555-1234"
+             data-image="Photo/P6.jpg">
+      <img class="card-img" src="Photo/P6.jpg" alt="Boutique Hotel">
+      <button class="edit-btn" data-type="hotel">Edit</button>
+      <h4 class="card-title">The Cozy Boutique</h4>
+      <div class="card-content">
+        <p class="card-desc">
+          Charming boutique hotel with unique decor and personalized service, perfect for a romantic getaway.
+        </p>
+        <span class="contact">📞 Contact Us: +1 (212) 555-1234</span>
+      </div>
+    </article>
+
+    <article class="card"
+             data-id="hot003"
+             data-name="Downtown City Hub"
+             data-destination="Tokyo"
+             data-rating="3"
+             data-minprice="100"
+             data-maxprice="200"
+             data-roomtypes="Standard Single,Standard Double"
+             data-amenities="Free WiFi,Restaurant,Air Conditioning,Airport Shuttle"
+             data-description="Modern hotel located in the heart of the city, ideal for business travelers and urban explorers."
+             data-contact="+81 (03) 9876 5432"
+             data-image="Photo/P7.jpg">
+      <img class="card-img" src="Photo/P7.jpg" alt="City View Hotel">
+      <button class="edit-btn" data-type="hotel">Edit</button>
+      <h4 class="card-title">Downtown City Hub</h4>
+      <div class="card-content">
+        <p class="card-desc">
+          Modern hotel located in the heart of the city, ideal for business travelers and urban explorers.
+        </p>
+        <span class="contact">📞 Contact Us: +81 (03) 9876 5432</span>
+      </div>
+    </article>
+  </div>
+
+  <form id="add-hotel-form" class="add-form hidden">
+    <div class="form-header">
+      <h3 id="hotel-form-title">Add New Hotel</h3>
+      <button type="button" class="close-btn" id="close-hotel-form">&times;</button>
+    </div>
+
+    <input type="hidden" id="hotel-edit-id" name="id">
+
+    <label>
+      Hotel Name*
+      <input type="text" name="name" required placeholder="e.g., The Plaza Hotel" id="hotel-name">
+    </label>
+
+    <label>
+      Contact Number
+      <input type="tel" name="contact" placeholder="e.g., +123 456 7890" id="hotel-contact">
+    </label>
+
+    <label>
+      Linked Destination*
+      <select name="destination" required id="hotel-destination">
+        <option value="">Select Destination</option>
+        <option value="Paris">Paris</option>
+        <option value="New York">New York</option>
+        <option value="Tokyo">Tokyo</option>
+      </select>
+    </label>
+
+    <label>
+      Star Rating
+      <select name="rating" id="hotel-rating">
+        <option value="">Select Rating</option>
+        <option value="1">1 Star</option>
+        <option value="2">2 Stars</option>
+        <option value="3">3 Stars</option>
+        <option value="4">4 Stars</option>
+        <option value="5">5 Stars</option>
+      </select>
+    </label>
+
+    <label>
+      Price Range
+      <div class="price-range-group">
+        <input type="number" name="minPrice" placeholder="Min" min="0" id="hotel-minprice">
+        <span>to</span>
+        <input type="number" name="maxPrice" placeholder="Max" min="0" id="hotel-maxprice">
+        <span>Per Night</span>
+      </div>
+    </label>
+
+    <label>
+      Room Types
+      <div id="room-types-container">
+        <div class="room-type-input-group">
+            <input type="text" name="roomType[]" placeholder="e.g., Standard Double">
+            <button type="button" class="remove-room-type-btn hidden">&times;</button>
+        </div>
+      </div>
+      <button type="button" class="btn add-room-type-btn" id="add-room-type-btn">Add Room Type</button>
+    </label>
+
+    <label>
+      Amenities
+      <div class="amenities-grid" id="hotel-amenities">
+        <label><input type="checkbox" name="amenity" value="Free WiFi">Free WiFi</label>
+        <label><input type="checkbox" name="amenity" value="Swimming Pool">Swimming Pool</label>
+        <label><input type="checkbox" name="amenity" value="Restaurant">Restaurant</label>
+        <label><input type="checkbox" name="amenity" value="Breakfast Included">Breakfast Included</label>
+        <label><input type="checkbox" name="amenity" value="Concierge Service">Concierge Service</label>
+        <label><input type="checkbox" name="amenity" value="Fitness Center">Fitness Center</label>
+        <label><input type="checkbox" name="amenity" value="Bar/Lounge">Bar/Lounge</label>
+        <label><input type="checkbox" name="amenity" value="Pet Friendly">Pet Friendly</label>
+        <label><input type="checkbox" name="amenity" value="Spa Services">Spa Services</label>
+        <label><input type="checkbox" name="amenity" value="Free Parking">Free Parking</label>
+        <label><input type="checkbox" name="amenity" value="Air Conditioning">Air Conditioning</label>
+        <label><input type="checkbox" name="amenity" value="Airport Shuttle">Airport Shuttle</label>
+      </div>
+    </label>
+
+    <label>
+      Description
+      <textarea name="description" rows="4" placeholder="Describe this Hotel in detail..." id="hotel-description"></textarea>
+    </label>
+
+    <label>
+      Upload Images
+      <div class="file-upload-container">
+        <input type="file" multiple accept="image/*" id="hotel-image-upload">
+        <div class="file-upload-content">
+          <button type="button" class="file-upload-button">Browse...</button>
+          <span class="file-upload-text" id="hotel-file-status">No files selected.</span>
+          <small>Click to upload or drag and drop images<br>Multiple files Supported (PNG, JPG, JPEG)</small>
+        </div>
+      </div>
+      <div id="hotel-current-image-preview" style="margin-top: 10px; display: none;">
+        <p>Current Image:</p>
+        <img id="hotel-current-image" src="" alt="Current Hotel Image" style="max-width: 200px; height: auto; border-radius: var(--radius-sm);">
+      </div>
+    </label>
+
+    <div class="form-actions">
+      <button type="button" class="btn cancel-btn" id="cancel-hotel-add">Cancel</button>
+      <button type="submit" class="btn save-btn">Save Hotel</button>
+    </div>
+  </form>
+</section>
+ <script src="script.js"></script>
+  </body>
+</html>
