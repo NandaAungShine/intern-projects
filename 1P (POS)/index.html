@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>POS System</title>
+    <link rel="stylesheet" href="sale.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <section id="sale-content" class="page-content hidden">
+    <div class="container">
+        <div class="menu-section">
+            <div class="header-section">
+                <h2>Menu Items</h2>
+                <div class="datetime" id="datetime"></div>
+            </div>
+            
+            <div class="category-tabs" id="category-tabs">
+                <div class="category-tab active" data-category="all">All Items</div>
+                <div class="category-tab" data-category="foods">Foods</div>
+                <div class="category-tab" data-category="drinks">Drinks</div>
+                <div class="category-tab" data-category="snacks">Snacks</div>
+                <div class="category-tab" data-category="desserts">Desserts</div>
+            </div>
+            
+            <div class="menu-items-grid" id="menu-items-grid"></div>
+        </div>
+        
+        <div class="bill-section">
+            <div class="bill-header">
+                <h3>Current Order</h3>
+            </div>
+            
+            <div class="customer-info">
+                <label for="table-number">Table No:</label>
+                <input type="number" id="table-number" min="1" value="1">
+            </div>
+
+            <div class="bill-items" id="bill-items">
+                <div class="empty-bill-message">No items added yet.</div>
+            </div>
+            
+            <div class="bill-summary">
+                <div class="summary-row">
+                    <span>Subtotal:</span>
+                    <span id="subtotal-amount">$0.00</span>
+                </div>
+                <div class="summary-row discount-input">
+                    <span>Discount (%):</span>
+                    <input type="number" id="discount-percentage" min="0" max="100" value="0">
+                </div>
+                <div class="summary-row">
+                    <span>Discount Amount:</span>
+                    <span id="discount-amount">$0.00</span>
+                </div>
+                <div class="summary-row total-amount">
+                    <span>Total:</span>
+                    <span id="total-amount">$0.00</span>
+                </div>
+            </div>
+            
+            <div class="payment-options">
+                <select id="payment-method">
+                    <option value="">Select Payment Method</option>
+                    <option value="Cash">Cash</option>
+                    <option value="Card">Credit Card</option>
+                    <option value="Mobile">Mobile Payment</option>
+                </select>
+            </div>
+
+            <div class="action-buttons">
+                <button class="btn btn-clear" id="clear-order-btn">Clear Order</button>
+                <button class="btn btn-checkout" id="checkout-btn">Checkout</button>
+                <button class="btn btn-print" id="print-bill-btn">Print Bill</button>
+            </div>
+        </div>
+    </div>
+</section>
+    <script src="sale.js"></script>
+</body>
+</html>
