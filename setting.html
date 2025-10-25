@@ -1,0 +1,3664 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>POS System Settings</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #5F9EA0;
+            --primary-light: #8abbbd;
+            --primary-dark: #4a7c7e;
+            --text-color: #333;
+            --light-bg: #f8fafc;
+            --white: #ffffff;
+            --border-color: #e2e8f0;
+            --success-color: #4caf50;
+            --warning-color: #ff9800;
+            --danger-color: #f44336;
+            --gray-100: #f1f5f9;
+            --gray-200: #e2e8f0;
+            --gray-300: #cbd5e1;
+            --gray-600: #64748b;
+            --gray-800: #1e293b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--light-bg);
+            color: var(--text-color);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .container {
+            display: flex;
+            width: 100%;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 75px;
+            background-color: var(--primary-color);
+            padding: 20px 0px;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+
+        .logo {
+            display: block;
+            margin-bottom: 30px;
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #000000;
+            text-align: center;
+        }
+
+        .logo i {
+            margin-right: 0px;
+            font-size: 1.7em;
+        }
+
+        .sidebar nav {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            justify-content: space-between;
+        }
+
+        .sidebar nav ul {
+            list-style: none;
+            width: 100%;
+            padding: 0 40px;
+        }
+
+        .sidebar nav ul li {
+            position: relative;
+            margin-bottom: 15px;
+        }
+
+        .sidebar nav ul li a {
+            display: block;
+            text-align: center;
+            padding: 12px 15px;
+            margin-left: 10px;
+            text-decoration: none;
+            color: #555;
+            border-radius: 5px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            font-size: 1.1em;
+        }
+
+        .sidebar nav ul li a.active {
+            background: var(--white);
+        }
+
+        .sidebar nav ul li a i {
+            margin-right: 15px;
+            font-size: 1.3em;
+            color: #000000;
+        }
+
+        .sidebar nav ul li a:hover,
+        .sidebar nav ul li a.active {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .sidebar nav ul li .tooltip {
+            position: absolute;
+            left: 110%;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: #333;
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 3px;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+            font-size: 0.9em;
+            z-index: 10;
+        }
+
+        .sidebar nav ul li:hover .tooltip {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .sidebar nav ul li.logout {
+            margin-top: auto;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            padding-top: 15px;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex-grow: 1;
+            padding: 0px;
+            overflow-y: auto;
+        }
+
+        .main-header {
+            display: flex;
+            justify-content: space-between;
+            background-color: var(--primary-color);
+            align-items: center;
+            margin-bottom: 25px;
+            padding: 10px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--primary-dark);
+        }
+
+        .main-header h1 {
+            font-size: 1.8em;
+            color: #000000;
+            margin-left: 15px;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+        }
+
+        .user-info {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-right: 35px;
+            font-size: 1.1em;
+            color: #000000;
+            margin-top: 10px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-left: 10px;
+            object-fit: cover;
+        }
+
+        .notification-icon {
+            font-size: 1.5em;
+            color: #000000;
+            cursor: pointer;
+            margin-right: 30px;
+            margin-top: 10px;
+        }
+
+        /* Content Wrapper */
+        .content-wrapper {
+            padding: 20px;
+            background-color: var(--light-bg);
+        }
+
+        /* Tabs */
+        .tabs-container {
+            display: flex;
+            margin-bottom: 30px;
+            background-color: var(--white);
+            border-radius: 10px;
+            padding: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 12px 15px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            color: var(--gray-600);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn.active {
+            background-color: var(--primary-color);
+            color: #000000;
+        }
+
+        .tab-btn:hover:not(.active) {
+            background-color: var(--gray-100);
+            color: var(--gray-800);
+        }
+
+        /* Content Layout */
+        .content-container {
+            display: flex;
+            gap: 20px;
+        }
+
+        .left-column {
+            width: 30%;
+        }
+
+        .right-column {
+            width: 70%;
+        }
+
+        /* Box Items */
+        .box-item {
+            background-color: var(--white);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .profile-box {
+            text-align: center;
+        }
+
+        .profile-image-container {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+
+        .profile-initial {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 80px;
+            height: 80px;
+            background-color: var(--primary-color);
+            color: #000000;
+            border-radius: 50%;
+            font-size: 2em;
+            font-weight: bold;
+        }
+
+        .profile-upload-btn {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            background-color: var(--primary-color);
+            color: #000000;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: 2px solid var(--white);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .user-name {
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .user-role {
+            color: var(--gray-600);
+            margin-bottom: 15px;
+        }
+
+        .profile-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .btn-primary, .btn-secondary {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: #000000;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .btn-secondary {
+            background-color: var(--gray-200);
+            color: var(--gray-800);
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--gray-300);
+        }
+
+        /* Quick Actions */
+        .actions-box {
+            padding: 15px;
+        }
+
+        .section-title {
+            font-size: 1.2em;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--gray-800);
+        }
+
+        .quick-actions-list {
+            list-style: none;
+        }
+
+        .quick-action-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 0;
+            cursor: pointer;
+            border-bottom: 1px solid var(--gray-200);
+            transition: background-color 0.3s ease;
+        }
+
+        .quick-action-item:hover {
+            background-color: var(--gray-100);
+        }
+
+        .action-icon {
+            margin-right: 10px;
+            width: 30px;
+            height: 30px;
+            background-color: var(--primary-light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-color);
+        }
+
+        /* Tab Content */
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Form Grid */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-group label {
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: var(--gray-800);
+        }
+
+        input, select, textarea {
+            padding: 10px;
+            border: 1px solid var(--gray-300);
+            border-radius: 5px;
+            font-size: 1em;
+        }
+
+        .readonly-field {
+            background-color: var(--gray-100);
+            color: var(--gray-600);
+        }
+
+        .date-input-container {
+            position: relative;
+        }
+
+        .calendar-icon {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray-600);
+            cursor: pointer;
+        }
+
+        /* Radio Group */
+        .radio-group {
+            display: flex;
+            gap: 20px;
+            margin-top: 5px;
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .radio-option input {
+            display: none;
+        }
+
+        .radio-custom {
+            width: 18px;
+            height: 18px;
+            border: 2px solid var(--gray-300);
+            border-radius: 50%;
+            margin-right: 8px;
+            position: relative;
+            transition: border-color 0.3s ease;
+        }
+
+        .radio-option input:checked + .radio-custom {
+            border-color: var(--primary-color);
+        }
+
+        .radio-option input:checked + .radio-custom::after {
+            content: '';
+            width: 10px;
+            height: 10px;
+            background-color: var(--primary-color);
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        /* Form Actions */
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        /* Box Item Common Styles */
+        .security-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .security-item {
+            background-color: var(--white);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .security-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .security-title {
+            font-size: 1.2em;
+            font-weight: 600;
+        }
+
+        .security-status {
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.9em;
+            font-weight: 600;
+        }
+
+        .status-enabled {
+            background-color: rgba(76, 175, 80, 0.1);
+            color: var(--success-color);
+        }
+
+        .security-description {
+            color: var(--gray-600);
+            margin-bottom: 15px;
+        }
+
+        /* Toggle Switch */
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--gray-300);
+            transition: .4s;
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--primary-color);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        /* Notification Items */
+        .notification-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .notification-info {
+            flex-grow: 1;
+        }
+
+        .notification-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .notification-desc {
+            color: var(--gray-600);
+            font-size: 0.9em;
+        }
+
+        /* Password Requirements */
+        .password-requirements {
+            background-color: var(--gray-100);
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+
+        .password-requirements p {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .password-requirements ul {
+            list-style-type: disc;
+            margin-left: 20px;
+            color: var(--gray-600);
+        }
+
+        .password-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        /* Preference Items */
+        .preference-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .preference-info {
+            flex-grow: 1;
+        }
+
+        .preference-title {
+            font-weight: 600;
+        }
+
+        .select-field {
+            min-width: 200px;
+            padding: 8px 12px;
+        }
+
+        /* Color Picker Styles */
+        .color-picker-container {
+            padding: 15px 0;
+        }
+
+        .color-options {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .color-option {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 2px solid transparent;
+        }
+
+        .color-option:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        .color-option.active {
+            transform: scale(1.05);
+            box-shadow: 0 0 0 3px white, 0 0 0 6px currentColor;
+        }
+
+        .color-picker-wrapper {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        #customColor {
+            -webkit-appearance: none;
+            border: none;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            border-radius: 8px;
+            padding: 0;
+        }
+
+        #customColor::-webkit-color-swatch {
+            border-radius: 8px;
+            border: none;
+        }
+        #customColor::-moz-color-swatch {
+            border-radius: 8px;
+            border: none;
+        }
+
+        .color-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 50px;
+            height: 50px;
+            border: 2px solid #ccc;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .color-icon:hover {
+            border-color: #5F9EA0;
+            background: #f5f5f5;
+        }
+        .color-icon svg {
+            width: 28px;
+            height: 28px;
+        }
+
+        .custom-color-section {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            align-items: center;
+        }
+
+        .custom-color-section input[type="color"] {
+            width: 50px;
+            height: 40px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            padding: 0;
+        }
+
+        .color-preview {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            padding: 10px;
+            background-color: var(--gray-100);
+            border-radius: 8px;
+        }
+
+        .preview-icon {
+            font-size: 24px;
+            transition: all 0.3s ease;
+        }
+
+        .saved-colors {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid var(--gray-200);
+        }
+
+        .saved-colors-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--gray-800);
+        }
+
+        .saved-colors-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            min-height: 40px;
+            align-items: center;
+        }
+
+        .saved-color {
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid white;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease;
+        }
+
+        .saved-color:hover {
+            transform: scale(1.1);
+        }
+
+        .empty-message {
+            color: var(--gray-600);
+            font-style: italic;
+            text-align: center;
+            width: 100%;
+        }
+
+        .color-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        /* Customize Items */
+        .customize-item {
+            background-color: var(--white);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .customize-title {
+            font-size: 1.2em;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--gray-800);
+        }
+
+        .control-group {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .control-group:last-child {
+            border-bottom: none;
+        }
+
+        .control-label {
+            font-weight: 600;
+            flex-basis: 40%;
+        }
+
+        .control-field {
+            flex-basis: 55%;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .control-field input[type="text"],
+        .control-field select {
+            flex-grow: 1;
+            min-width: 100px;
+        }
+
+        .line-style-option {
+            padding: 8px 12px;
+            border: 1px solid var(--gray-300);
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 1.5em;
+            line-height: 1;
+        }
+
+        .line-style-option.active {
+            border-color: var(--primary-color);
+            background-color: var(--primary-light);
+        }
+
+        /* Modal/Popup for Preview */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal.visible {
+            display: flex;
+        }
+
+        .modal-content {
+            background-color: var(--white);
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--gray-200);
+            padding-bottom: 15px;
+            margin-bottom: 15px;
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            font-size: 1.4em;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5em;
+            cursor: pointer;
+            color: var(--gray-600);
+        }
+
+        .modal-preview-area {
+            min-height: 300px;
+            border: 1px dashed var(--gray-300);
+            padding: 20px;
+            margin-bottom: 20px;
+            background-color: var(--gray-100);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            align-items: center;
+            overflow-x: auto;
+        }
+
+        /* Receipt Preview Styles */
+        .receipt-preview {
+            width: 100%;
+            background-color: white;
+            padding: 15px;
+            border: 1px solid #ddd;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            font-family: 'monospace';
+        }
+
+        .receipt-header {
+            margin-bottom: 10px;
+        }
+
+        .receipt-header img {
+            max-width: 80px;
+            margin-bottom: 5px;
+        }
+
+        .receipt-header .placeholder-logo {
+            display: inline-block;
+            width: 80px;
+            height: 80px;
+            background-color: #f1f1f1;
+            border: 1px solid #ccc;
+            text-align: center;
+            line-height: 80px;
+            margin-bottom: 10px;
+            font-size: 0.8em;
+        }
+
+        .receipt-header .shop-name {
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        .receipt-divider {
+            height: 1px;
+            margin: 10px 0;
+        }
+
+        .receipt-body div {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 3px;
+        }
+
+        .receipt-body .total {
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .receipt-footer {
+            margin-top: 10px;
+            font-size: 0.9em;
+        }
+
+        /* Voucher Preview Styles */
+        .voucher-preview {
+            width: 100%;
+            background-color: white;
+            padding: 15px;
+            border: 1px solid #ddd;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        .voucher-header {
+            text-align: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .voucher-header img {
+            max-width: 80px;
+            margin-bottom: 5px;
+        }
+
+        .voucher-header .placeholder-logo {
+            display: inline-block;
+            width: 80px;
+            height: 80px;
+            background-color: #f1f1f1;
+            border: 1px solid #ccc;
+            text-align: center;
+            line-height: 80px;
+            margin-bottom: 10px;
+            font-size: 0.8em;
+        }
+
+        .voucher-header .voucher-title {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .voucher-body {
+            margin-bottom: 15px;
+        }
+
+        .voucher-body table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
+        }
+
+        .voucher-body th, .voucher-body td {
+            padding: 5px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .voucher-body th {
+            font-weight: bold;
+        }
+
+        .voucher-footer {
+            text-align: center;
+            margin-top: 15px;
+            padding-top: 10px;
+            border-top: 1px solid #ddd;
+            font-size: 0.9em;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            padding-top: 15px;
+            border-top: 1px solid var(--gray-200);
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: 30px;
+            border-top: 1px solid var(--gray-200);
+            color: var(--gray-600);
+        }
+
+        footer a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .content-container {
+                flex-direction: column;
+            }
+
+            .left-column, .right-column {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 60px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .tabs-container {
+                flex-wrap: wrap;
+            }
+
+            .tab-btn {
+                flex: 1 0 50%;
+            }
+            
+            .control-group {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+
+            .control-label, .control-field {
+                flex-basis: 100%;
+                width: 100%;
+            }
+
+            .control-field input[type="text"],
+            .control-field select {
+                min-width: unset;
+            }
+            
+            .modal-content {
+                width: 95%;
+                padding: 15px;
+            }
+        }
+
+        /* Voucher Type Selection Styles */
+        .voucher-type-container {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .voucher-type-box {
+            flex: 1;
+            border: 2px solid var(--gray-300);
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .voucher-type-box:hover {
+            border-color: var(--primary-color);
+            background-color: var(--gray-100);
+        }
+
+        .voucher-type-box.active {
+            border-color: var(--primary-color);
+            background-color: var(--primary-light);
+        }
+
+        .voucher-type-icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+
+        .voucher-type-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .voucher-type-desc {
+            font-size: 0.9em;
+            color: var(--gray-600);
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <main class="main-content">
+        <header class="main-header">
+            <div class="header-left">
+                <h1>Settings</h1>
+            </div>
+            <div class="header-right">
+                <div class="user-info">
+                    <span>Welcome back!</span>
+                    <img src="img/p2.jpg" alt="User Avatar" class="user-avatar">
+                </div>
+                <div class="notification-icon">
+                    <i class="fas fa-bell"></i>
+                </div>
+            </div>
+        </header>
+        <div class="content-wrapper">
+            <div class="tabs-container">
+                <button class="tab-btn active" data-tab="profile">Profile</button>
+                <button class="tab-btn" data-tab="security">Security</button>
+                <button class="tab-btn" data-tab="notifications">Notifications</button>
+                <button class="tab-btn" data-tab="preferences">Preferences</button>
+                <button class="tab-btn" data-tab="customize">Customize</button>
+            </div>
+            <div class="content-container">
+                <div id="profile-column" class="left-column">
+                    <div class="box-item profile-box text-center">
+                        <div class="profile-image-container">
+                            <span id="profile-initial" class="profile-initial">S</span>
+                            <label for="profile-upload" class="profile-upload-btn">
+                                <i class="fas fa-camera"></i>
+                            </label>
+                            <input type="file" id="profile-upload" accept="image/*" class="hidden">
+                        </div>
+                        <p class="user-name">Sarah Johnson</p>
+                        <p class="user-role">Admin</p>
+                        <div class="profile-actions">
+                            <button id="edit-profile-btn" class="btn-primary">Edit Profile</button>
+                            <button class="btn-secondary">View Activity</button>
+                        </div>
+                    </div>
+                    <div class="box-item actions-box">
+                        <h3 class="section-title">Quick Actions</h3>
+                        <ul class="quick-actions-list">
+                            <li class="quick-action-item">
+                                    <span class="action-icon">
+                                        <i class="fas fa-download"></i>
+                                    </span>
+                                Export Data
+                            </li>
+                            <li class="quick-action-item">
+                                    <span class="action-icon">
+                                        <i class="fas fa-shield-alt"></i>
+                                    </span>
+                                Security Check
+                            </li>
+                            <li class="quick-action-item">
+                                    <span class="action-icon">
+                                        <i class="fas fa-history"></i>
+                                    </span>
+                                Activity Log
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="right-column">
+                    <div id="profile" class="tab-content active">
+                        <h3 class="section-title">Personal Information</h3>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>First Name</label>
+                                <input type="text" value="Sarah" class="readonly-field" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label>Last Name</label>
+                                <input type="text" value="Johnson" class="readonly-field" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label>Email Address</label>
+                                <input type="email" value="sarah.johnson@gmail.com" class="readonly-field" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label>Mobile Number</label>
+                                <input type="tel" value="+959 123-456-789" class="readonly-field" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label>Date Of Birth</label>
+                                <div class="date-input-container">
+                                    <input type="text" id="dob-input" value="March 1990" class="readonly-field" readonly>
+                                    <i class="fas fa-calendar calendar-icon" id="calendar-icon"></i>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Position</label>
+                                <select class="readonly-field" disabled>
+                                    <option selected>Senior Administrator</option>
+                                    <option>Administrator</option>
+                                    <option>Manager</option>
+                                    <option>Staff</option>
+                                </select>
+                            </div>
+                            <div class="form-group full-width">
+                                <label>Gender</label>
+                                <div class="radio-group">
+                                    <label class="radio-option">
+                                        <input type="radio" name="gender" checked disabled>
+                                        <span class="radio-custom"></span>
+                                        Female
+                                    </label>
+                                    <label class="radio-option">
+                                        <input type="radio" name="gender" disabled>
+                                        <span class="radio-custom"></span>
+                                        Male
+                                    </label>
+                                    <label class="radio-option">
+                                        <input type="radio" name="gender" disabled>
+                                        <span class="radio-custom"></span>
+                                        Other
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-group full-width">
+                                <label>Residential Address</label>
+                                <input type="text" value="123-456, 178 House St., San Jose, New York" class="readonly-field" readonly>
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button id="cancel-btn" class="btn-secondary hidden">Cancel</button>
+                            <button id="save-btn" class="btn-primary hidden">Save Changes</button>
+                        </div>
+                    </div>
+                    <div id="security" class="tab-content">
+                        <div class="security-grid">
+                            <div class="security-item">
+                                <div class="security-header">
+                                    <div class="security-title">Change Password</div>
+                                </div>
+                                <div class="password-form">
+                                    <div class="form-group">
+                                        <label>Current Password *</label>
+                                        <input type="password" placeholder="Enter current password">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>New Password *</label>
+                                        <input type="password" placeholder="Enter new password">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Confirm New Password *</label>
+                                        <input type="password" placeholder="Confirm new password">
+                                    </div>
+                                    <div class="password-requirements">
+                                        <p>Password Requirements:</p>
+                                        <ul>
+                                            <li>Minimum 8 characters long - the more, the better</li>
+                                            <li>At least one lowercase character</li>
+                                            <li>At least one number, symbol, or whitespace character</li>
+                                        </ul>
+                                    </div>
+                                    <div class="password-actions">
+                                        <button class="btn-secondary">Reset</button>
+                                        <button class="btn-primary">Save Changes</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="security-item">
+                                <div class="security-header">
+                                    <div class="security-title">Two-Step Verification</div>
+                                    <span class="security-status status-enabled">Enabled</span>
+                                </div>
+                                <div class="security-description">
+                                    Two-step verification adds an extra layer of security to your account by requiring more than just a password to sign in.
+                                </div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="security-item">
+                                <div class="security-header">
+                                    <div class="security-title">Login Activity</div>
+                                </div>
+                                <div class="security-description">Recent login attempts and active sessions</div>
+                                <div class="notification-item">
+                                    <div class="notification-info">
+                                        <div class="notification-title">Current Session</div>
+                                        <div class="notification-desc">Chrome on Windows</div>
+                                        <div class="notification-desc">Location: Yangon, Blah Blah</div>
+                                    </div>
+                                    <span class="security-status status-enabled">Active</span>
+                                </div>
+                                <div class="notification-item">
+                                    <div class="notification-info">
+                                        <div class="notification-title">Mobile App</div>
+                                        <div class="notification-desc">iPhone11 • 2 hours ago</div>
+                                        <div class="notification-desc">Location: Yangon, Blah Blah</div>
+                                    </div>
+                                    <button class="btn-secondary">Delete</button>
+                                </div>
+                                <div class="notification-item">
+                                    <div class="notification-info">
+                                        <div class="notification-title">Safari on macOS</div>
+                                        <div class="notification-desc">Yesterday at 3:24 PM</div>
+                                        <div class="notification-desc">Location: Yangon, Blah Blah</div>
+                                    </div>
+                                    <button class="btn-secondary">Delete</button>
+                                </div>
+                                <div class="form-actions">
+                                    <button class="btn-primary">View All Activity</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="notifications" class="tab-content">
+                        <div class="security-item">
+                            <div class="security-header">
+                                <div class="security-title">Email Notifications</div>
+                            </div>
+                            <div class="security-description">Choose what email notifications you want to receive</div>
+                            <div class="notification-item">
+                                <div class="notification-info">
+                                    <div class="notification-title">Security Alerts</div>
+                                    <div class="notification-desc">Login attempts, password changes</div>
+                                </div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="notification-item">
+                                <div class="notification-info">
+                                    <div class="notification-title">Trading Alerts</div>
+                                    <div class="notification-desc">Large transactions, price changes</div>
+                                </div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="notification-item">
+                                <div class="notification-info">
+                                    <div class="notification-title">System Updates</div>
+                                    <div class="notification-desc">Maintenance, new features</div>
+                                </div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="notification-item">
+                                <div class="notification-info">
+                                    <div class="notification-title">Weekly Reports</div>
+                                    <div class="notification-desc">Platform performance summaries</div>
+                                </div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="notification-item">
+                                <div class="notification-info">
+                                    <div class="notification-title">Promotional Emails</div>
+                                    <div class="notification-desc">Special offers and discounts</div>
+                                </div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="security-item">
+                            <div class="security-header">
+                                <div class="security-title">Mobile & SMS Notifications</div>
+                            </div>
+                            <div class="security-description">Configure mobile app and SMS notifications</div>
+                            <div class="notification-item">
+                                <div class="notification-info">
+                                    <div class="notification-title">Push Notifications</div>
+                                    <div class="notification-desc">Mobile app notifications</div>
+                                </div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="notification-item">
+                                <div class="notification-info">
+                                    <div class="notification-title">SMS Security Alerts</div>
+                                    <div class="notification-desc">Critical security notifications</div>
+                                </div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="notification-item">
+                                <div class="notification-info">
+                                    <div class="notification-title">Transaction Alerts</div>
+                                    <div class="notification-desc">Real-time transaction updates</div>
+                                </div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="notification-item">
+                                <div class="notification-info">
+                                    <div class="notification-title">Account Activity</div>
+                                    <div class="notification-desc">Important account changes</div>
+                                </div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="security-item">
+                            <div class="security-header">
+                                <div class="security-title">System Notifications</div>
+                            </div>
+                            <div class="security-description">Configure system-wide notification preferences</div>
+                            <div class="notification-item">
+                                <div class="notification-info">
+                                    <div class="notification-title">Sound Alerts</div>
+                                    <div class="notification-desc">Play sounds for notifications</div>
+                                </div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="notification-item">
+                                <div class="notification-info">
+                                    <div class="notification-title">Desktop Notifications</div>
+                                    <div class="notification-desc">Show notifications on your desktop</div>
+                                </div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="notification-item">
+                                <div class="notification-info">
+                                    <div class="notification-title">Do Not Disturb</div>
+                                    <div class="notification-desc">Temporarily silence all notifications</div>
+                                </div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="preferences" class="tab-content">
+                        <div class="security-item">
+                            <div class="security-header">
+                                <div class="security-title">Regional Settings</div>
+                            </div>
+                            <div class="security-description">Configure your language, timezone, and regional preferences</div>
+                            <div class="preference-item">
+                                <div class="preference-info">
+                                    <div class="preference-title">Language</div>
+                                </div>
+                                <select class="select-field">
+                                    <option selected>English</option>
+                                    <option>Myanmar (မြန်မာ)</option>
+                                </select>
+                            </div>
+                            <div class="preference-item">
+                                <div class="preference-info">
+                                    <div class="preference-title">Timezone</div>
+                                </div>
+                                <select class="select-field">
+                                    <option selected>Myanmar, Yangon (GMT+6:30)</option>
+                                    <option>United States, New York (GMT-5)</option>
+                                </select>
+                            </div>
+                            <div class="preference-item">
+                                <div class="preference-info">
+                                    <div class="preference-title">Regional Format</div>
+                                </div>
+                                <select class="select-field">
+                                    <option selected>Myanmar (MMK)</option>
+                                    <option>United States (USD)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="security-item">
+                            <div class="security-header">
+                                <div class="security-title">Appearance</div>
+                            </div>
+                            <div class="security-description">Customize the look and feel of your dashboard</div>
+                            <div class="preference-item">
+                                <div class="preference-info">
+                                    <div class="preference-title">Theme</div>
+                                </div>
+                                <select class="select-field">
+                                    <option>Light</option>
+                                    <option>Dark</option>
+                                    <option selected>System Default</option>
+                                </select>
+                            </div>
+                            <div class="preference-item">
+                                <div class="preference-info">
+                                    <div class="preference-title">Accent Color</div>
+                                </div>
+                                <div class="color-picker-container">
+                                    <div class="color-options">
+                                        <div class="color-option" style="background-color: #5F9EA0;" data-color="#5F9EA0"></div>
+                                        <div class="color-option" style="background-color: #4CAF50;" data-color="#4CAF50"></div>
+                                        <div class="color-option" style="background-color: #2196F3;" data-color="#2196F3"></div>
+                                        <div class="color-option" style="background-color: #FF9800;" data-color="#FF9800"></div>
+                                        <div class="color-option" style="background-color: #9C27B0;" data-color="#9C27B0"></div>
+                                    </div>
+                                    <div class="custom-color-section">
+                                        <input type="color" id="customColor" value="#5F9EA0">
+
+                                        <label for="customColor" class="color-icon">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                                <path d="M2 12l9 9 11-11V3h-7L2 12z"/>
+                                            </svg>
+                                        </label>
+                                        <button id="applyCustomColor" class="btn-primary">Apply</button>
+                                    </div>
+                                    <div class="color-preview">
+                                        <div class="preview-icon">✏️</div>
+                                        <span>Preview</span>
+                                    </div>
+                                    <div class="saved-colors">
+                                        <div class="saved-colors-title">Saved Colors</div>
+                                        <div class="saved-colors-list" id="savedColorsList">
+                                            <div class="empty-message">No saved colors yet</div>
+                                        </div>
+                                    </div>
+                                    <div class="color-actions">
+                                        <button id="saveColor" class="btn-primary">Save Color</button>
+                                        <button id="clearSaved" class="btn-secondary">Clear Saved</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="preference-item">
+                                <div class="preference-info">
+                                    <div class="preference-title">Font Size</div>
+                                </div>
+                                <select class="select-field">
+                                    <option>Smallest</option>
+                                    <option>Small</option>
+                                    <option selected>Medium</option>
+                                    <option>Large</option>
+                                    <option>Largest</option>
+                                    <option>Default</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="customize" class="tab-content">
+                        <h3 class="section-title">Customize Application Sections</h3>
+
+                        <!-- Editor Recommended Templates -->
+                        <div class="customize-item">
+                            <div class="customize-title"><i class="fas fa-palette"></i> Editor Recommended Templates</div>
+                            <div class="color-options" style="justify-content: center; margin-top: 15px;">
+                                <div class="color-option active" style="background: linear-gradient(135deg, #5F9EA0, #8abbbd);" data-template="default">
+                                    <i class="fas fa-check" style="color: white; font-size: 1.2em;"></i>
+                                </div>
+                                <div class="color-option" style="background: linear-gradient(135deg, #4CAF50, #81C784);" data-template="green">
+                                </div>
+                                <div class="color-option" style="background: linear-gradient(135deg, #2196F3, #64B5F6);" data-template="blue">
+                                </div>
+                            </div>
+                            <div style="text-align: center; margin-top: 10px; color: var(--gray-600); font-size: 0.9em;">
+                                Click on a template to apply its color scheme
+                            </div>
+                        </div>
+                        
+                        <!-- Section Selection Dropdown -->
+                        <div class="control-group">
+                            <label class="control-label">Select Section to Customize</label>
+                            <div class="control-field">
+                                <select id="sectionSelector" class="select-field">
+                                    <option value="login">Login/Sign up</option>
+                                    <option value="dashboard">Dashboard</option>
+                                    <option value="sale" selected>Sale</option>
+                                    <option value="inventory">Inventory</option>
+                                    <option value="report">Report</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <!-- Login/Sign up Section -->
+                        <div id="login-section" class="section-content" style="display: none;">
+                            <div class="customize-item">
+                                <div class="customize-title"><i class="fas fa-sign-in-alt"></i> Login/Sign up Settings</div>
+                                
+                                <div class="control-group">
+                                    <label class="control-label">Background Image</label>
+                                    <div class="control-field">
+                                        <input type="file" id="loginBgImage" accept="image/*">
+                                    </div>
+                                </div>
+                                
+                                <div class="control-group">
+                                    <label class="control-label">Background Color</label>
+                                    <div class="control-field">
+                                        <input type="color" id="loginBgColor" value="#f8fafc">
+                                    </div>
+                                </div>
+                                
+                                <div class="control-group">
+                                    <label class="control-label">Form Background</label>
+                                    <div class="control-field">
+                                        <input type="color" id="loginFormBg" value="#ffffff">
+                                    </div>
+                                </div>
+                                
+                                <div class="control-group">
+                                    <label class="control-label">Primary Button Color</label>
+                                    <div class="control-field">
+                                        <input type="color" id="loginBtnColor" value="#5F9EA0">
+                                    </div>
+                                </div>
+                                
+                                <div class="control-group">
+                                    <label class="control-label">Show Company Logo</label>
+                                    <div class="control-field">
+                                        <label class="toggle-switch">
+                                            <input type="checkbox" checked data-control="showLoginLogo">
+                                            <span class="slider"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                                
+                                <div class="control-group">
+                                    <label class="control-label">Show Remember Me</label>
+                                    <div class="control-field">
+                                        <label class="toggle-switch">
+                                            <input type="checkbox" checked data-control="showRememberMe">
+                                            <span class="slider"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                                
+                                <div class="control-group">
+                                    <label class="control-label">Show Social Login</label>
+                                    <div class="control-field">
+                                        <label class="toggle-switch">
+                                            <input type="checkbox" data-control="showSocialLogin">
+                                            <span class="slider"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-actions">
+                                    <button class="btn-primary preview-btn" data-section="login">Preview</button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Dashboard Section -->
+                        <div id="dashboard-section" class="section-content" style="display: none;">
+                            <div class="customize-item">
+                                <div class="customize-title"><i class="fas fa-tachometer-alt"></i> Dashboard Settings</div>
+                                
+                                <div class="control-group">
+                                    <label class="control-label">Default View</label>
+                                    <div class="control-field">
+                                        <select id="dashboardView" class="select-field">
+                                            <option value="overview" selected>Overview</option>
+                                            <option value="analytics">Analytics</option>
+                                            <option value="minimal">Minimal</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <div class="control-group">
+                                    <label class="control-label">Show Sales Chart</label>
+                                    <div class="control-field">
+                                        <label class="toggle-switch">
+                                            <input type="checkbox" checked data-control="showSalesChart">
+                                            <span class="slider"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                                
+                                <div class="control-group">
+                                    <label class="control-label">Show Recent Activity</label>
+                                    <div class="control-field">
+                                        <label class="toggle-switch">
+                                            <input type="checkbox" checked data-control="showRecentActivity">
+                                            <span class="slider"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                                
+                                <div class="control-group">
+                                    <label class="control-label">Show Quick Stats</label>
+                                    <div class="control-field">
+                                        <label class="toggle-switch">
+                                            <input type="checkbox" checked data-control="showQuickStats">
+                                            <span class="slider"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                                
+                                <div class="control-group">
+                                    <label class="control-label">Card Style</label>
+                                    <div class="control-field">
+                                        <select id="dashboardCardStyle" class="select-field">
+                                            <option value="default" selected>Default</option>
+                                            <option value="minimal">Minimal</option>
+                                            <option value="bordered">Bordered</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <div class="control-group">
+                                    <label class="control-label">Background Color</label>
+                                    <div class="control-field">
+                                        <input type="color" id="dashboardBgColor" value="#f8fafc">
+                                    </div>
+                                </div>
+                                
+                                <div class="form-actions">
+                                    <button class="btn-primary preview-btn" data-section="dashboard">Preview</button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Sale Section - Existing Content -->
+                        <div id="sale-section" class="section-content">
+                            <!-- Existing Sale content here -->
+                            <div class="customize-item" data-section="voucher">
+                                <div class="customize-title"><i class="fas fa-ticket-alt"></i> Voucher Template</div>
+                                
+                                <!-- Voucher Type Selection -->
+                                <h4 class="section-title" style="margin-top: 25px;">Voucher Type Selection</h4>
+                                
+                                <div class="voucher-type-container">
+                                    <div class="voucher-type-box active" data-type="sale">
+                                        <div class="voucher-type-icon">
+                                            <i class="fas fa-shopping-bag"></i>
+                                        </div>
+                                        <div class="voucher-type-title">Sale Voucher</div>
+                                        <div class="voucher-type-desc">For product sales only</div>
+                                    </div>
+                                    <div class="voucher-type-box" data-type="rental">
+                                        <div class="voucher-type-icon">
+                                            <i class="fas fa-clock"></i>
+                                        </div>
+                                        <div class="voucher-type-title">Rental Voucher</div>
+                                        <div class="voucher-type-desc">For equipment rentals only</div>
+                                    </div>
+                                    <div class="voucher-type-box" data-type="both">
+                                        <div class="voucher-type-icon">
+                                            <i class="fas fa-sync-alt"></i>
+                                        </div>
+                                        <div class="voucher-type-title">Sale & Rental Voucher</div>
+                                        <div class="voucher-type-desc">For both sales and rentals</div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Mixed Settings - Combined from both sections -->
+                                <h4 class="section-title" style="margin-top: 25px;">Voucher & Receipt Settings</h4>
+                                
+                                <!-- Header Settings -->
+                                <div class="control-group">
+                                    <label class="control-label">Shop/Voucher Title</label>
+                                    <div class="control-field">
+                                        <input type="text" id="voucherTitleInput" placeholder="Voucher Title" value="VOUCHER">
+                                    </div>
+                                </div>
+                                
+                                <div class="control-group">
+                                    <label class="control-label">Shop Address</label>
+                                    <div class="control-field">
+                                        <input type="text" id="shopAddressInput" placeholder="123 Main St, Yangon" value="123 Main St, Yangon">
+                                    </div>
+                                </div>
+                                
+                                <div class="control-group">
+                                    <label class="control-label">Voucher/Receipt Number Prefix</label>
+                                    <div class="control-field">
+                                        <input type="text" id="voucherPrefixInput" placeholder="Prefix" value="VCH">
+                                    </div>
+                                </div>
+                                
+                                <div class="control-group">
+                                    <label class="control-label">Paper Size</label>
+                                    <div class="control-field">
+                                        <select id="receiptPaperSize" class="select-field">
+                                            <option value="58mm">58 mm (2.25 inch)</option>
+                                            <option value="80mm" selected>80 mm (3.15 inch)</option>
+                                            <option value="a4">A4 (Standard)</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="control-group">
+                                    <label class="control-label">Logo</label>
+                                    <div class="control-field">
+                                        <input type="file" id="voucherLogo" accept="image/*">
+                                    </div>
+                                </div>
+
+                                <div class="control-group">
+                                    <label class="control-label">Logo Alignment</label>
+                                    <div class="control-field">
+                                        <select id="logoAlignmentSelect" class="select-field">
+                                            <option value="center" selected>Center </option>
+                                            <option value="left">Left </option>
+                                            <option value="right">Right </option>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <!-- Date & Time Settings -->
+                                <h4 class="section-title" style="margin-top: 25px;">Date & Time Settings</h4>
+                                
+                                <div class="control-group">
+                                    <label class="control-label">Show Date & Time</label>
+                                    <div class="control-field">
+                                        <label class="toggle-switch">
+                                            <input type="checkbox" checked data-control="showDateTime">
+                                            <span class="slider"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                                
+                                <div class="control-group">
+                                    <label class="control-label">Date Format</label>
+                                    <div class="control-field">
+                                        <select id="dateFormatSelect" class="select-field">
+                                            <option value="dd/mm/yyyy" selected>DD/MM/YYYY</option>
+                                            <option value="mm/dd/yyyy">MM/DD/YYYY</option>
+                                            <option value="yyyy-mm-dd">YYYY-MM-DD</option>
+                                            <option value="dd-mm-yyyy">DD-MM-YYYY</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <div class="control-group">
+                                    <label class="control-label">Time Format</label>
+                                    <div class="control-field">
+                                        <select id="timeFormatSelect" class="select-field">
+                                            <option value="12h" selected>12-hour (AM/PM)</option>
+                                            <option value="24h">24-hour</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <div class="control-group">
+                                    <label class="control-label">Date & Time Position</label>
+                                    <div class="control-field">
+                                        <select id="dateTimePosition" class="select-field">
+                                            <option value="header" selected>Header </option>
+                                            <option value="body">Body </option>
+                                            <option value="footer">Footer </option>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <!-- Content Settings -->
+                                <h4 class="section-title" style="margin-top: 25px;">Content Settings</h4>
+                                
+                                <div class="control-group">
+                                    <label class="control-label">Show Customer Info</label>
+                                    <div class="control-field">
+                                        <label class="toggle-switch">
+                                            <input type="checkbox" checked data-control="showCustomerInfo">
+                                            <span class="slider"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                                
+                                <div class="control-group">
+                                    <label class="control-label">Show Payment Method</label>
+                                    <div class="control-field">
+                                        <label class="toggle-switch">
+                                            <input type="checkbox" checked data-control="showPaymentMethod">
+                                            <span class="slider"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                                
+                                <div class="control-group">
+                                    <label class="control-label">Show Terms & Conditions</label>
+                                    <div class="control-field">
+                                        <label class="toggle-switch">
+                                            <input type="checkbox" checked data-control="showTerms">
+                                            <span class="slider"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                                
+                                <div class="control-group">
+                                    <label class="control-label">Header/Footer Text</label>
+                                    <div class="control-field">
+                                        <textarea id="receiptHeaderText" placeholder="E.g., Thank you for your purchase!" rows="2" style="width: 100%;">Thank you for your purchase!</textarea>
+                                    </div>
+                                </div>
+                                
+                                <div class="control-group">
+                                    <label class="control-label">Terms & Conditions Text</label>
+                                    <div class="control-field">
+                                        <textarea id="voucherTermsText" placeholder="Enter terms and conditions" rows="3" style="width: 100%;">1. This voucher is non-refundable.
+2. Valid for 30 days from date of issue.
+3. Must be presented at time of purchase.</textarea>
+                                    </div>
+                                </div>
+                                
+                                <!-- Styling Settings -->
+                                <h4 class="section-title" style="margin-top: 25px;">Styling Settings</h4>
+                                
+                                <div class="control-group">
+                                    <label class="control-label">Divider Line Style</label>
+                                    <div class="control-field">
+                                        <select id="lineStyleSelect">
+                                            <option value="solid" selected>Solid Line</option>
+                                            <option value="dashed">Dashed Line (--)</option>
+                                            <option value="dotted">Dotted Line (..)</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="control-group">
+                                    <label class="control-label">Line Thickness (px)</label>
+                                    <div class="control-field">
+                                        <input type="number" id="lineThicknessInput" value="1" min="1" max="5">
+                                    </div>
+                                </div>
+
+                                <div class="control-group">
+                                    <label class="control-label">Line Spacing (px)</label>
+                                    <div class="control-field">
+                                        <input type="number" id="lineSpacingInput" value="10" min="5" max="30">
+                                    </div>
+                                </div>
+
+                                <div class="control-group">
+                                    <label class="control-label">Border Style</label>
+                                    <div class="control-field">
+                                        <select id="voucherBorderStyle">
+                                            <option value="solid" selected>Solid Line</option>
+                                            <option value="dashed">Dashed Line</option>
+                                            <option value="dotted">Dotted Line</option>
+                                            <option value="double">Double Line</option>
+                                            <option value="none">No Border</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <div class="control-group">
+                                    <label class="control-label">Border Color</label>
+                                    <div class="control-field">
+                                        <input type="color" id="voucherBorderColor" value="#000000">
+                                    </div>
+                                </div>
+                                
+                                <div class="control-group">
+                                    <label class="control-label">Background Color</label>
+                                    <div class="control-field">
+                                        <input type="color" id="voucherBgColor" value="#FFFFFF">
+                                    </div>
+                                </div>
+                                
+                                <div class="control-group">
+                                    <label class="control-label">Header Color</label>
+                                    <div class="control-field">
+                                        <input type="color" id="voucherHeaderColor" value="#5F9EA0">
+                                    </div>
+                                </div>
+
+                                <div class="control-group">
+                                    <label class="control-label">Font Family</label>
+                                    <div class="control-field">
+                                        <select id="fontFamilySelect">
+                                            <option value="monospace" selected>Monospace (Default)</option>
+                                            <option value="sans-serif">Sans-serif (Clean)</option>
+                                            <option value="serif">Serif (Traditional)</option>
+                                            <option value="cursive">Cursive (Script)</option>
+                                            <option value="fantasy">Fantasy (Decorative)</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="control-group">
+                                    <label class="control-label">Base Font Size (px)</label>
+                                    <div class="control-field">
+                                        <input type="number" id="fontSizeInput" value="14" min="10" max="20">
+                                    </div>
+                                </div>
+
+                                <div class="control-group">
+                                    <label class="control-label">Text Color</label>
+                                    <div class="control-field">
+                                        <input type="color" id="fontColorInput" value="#000000">
+                                    </div>
+                                </div>
+                                
+                                <div class="form-actions">
+                                    <button class="btn-primary preview-btn" data-section="voucher">Preview</button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Inventory Section -->
+                        <div id="inventory-section" class="section-content" style="display: none;">
+                            <div class="customize-item">
+                                <div class="customize-title"><i class="fas fa-boxes"></i> Inventory Settings</div>
+                                
+                                <div class="control-group">
+                                    <label class="control-label">Default View</label>
+                                    <div class="control-field">
+                                        <select id="inventoryView" class="select-field">
+                                            <option value="list" selected>List View</option>
+                                            <option value="grid">Grid View</option>
+                                            <option value="table">Table View</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <div class="control-group">
+                                    <label class="control-label">Show Barcode Column</label>
+                                    <div class="control-field">
+                                        <label class="toggle-switch">
+                                            <input type="checkbox" checked data-control="showBarcodeColumn">
+                                            <span class="slider"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                                
+                                <div class="control-group">
+                                    <label class="control-label">Show Stock Alerts</label>
+                                    <div class="control-field">
+                                        <label class="toggle-switch">
+                                            <input type="checkbox" checked data-control="showStockAlerts">
+                                            <span class="slider"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                                
+                                <div class="control-group">
+                                    <label class="control-label">Low Stock Threshold</label>
+                                    <div class="control-field">
+                                        <input type="number" id="lowStockThreshold" value="10" min="1" max="100">
+                                    </div>
+                                </div>
+                                
+                                <div class="control-group">
+                                    <label class="control-label">Enable Barcode Scanning</label>
+                                    <div class="control-field">
+                                        <label class="toggle-switch">
+                                            <input type="checkbox" checked data-control="enableBarcodeScanning">
+                                            <span class="slider"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                                
+                                <div class="control-group">
+                                    <label class="control-label">Show Product Images</label>
+                                    <div class="control-field">
+                                        <label class="toggle-switch">
+                                            <input type="checkbox" checked data-control="showProductImages">
+                                            <span class="slider"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                                
+                                <div class="control-group">
+                                    <label class="control-label">Items Per Page</label>
+                                    <div class="control-field">
+                                        <select id="itemsPerPage" class="select-field">
+                                            <option value="10">10 items</option>
+                                            <option value="25" selected>25 items</option>
+                                            <option value="50">50 items</option>
+                                            <option value="100">100 items</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-actions">
+                                    <button class="btn-primary preview-btn" data-section="inventory">Preview</button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Report Section -->
+                        <div id="report-section" class="section-content" style="display: none;">
+                            <div class="customize-item">
+                                <div class="customize-title"><i class="fas fa-chart-bar"></i> Report Settings</div>
+                                
+                                <div class="control-group">
+                                    <label class="control-label">Default Report Type</label>
+                                    <div class="control-field">
+                                        <select id="defaultReportType" class="select-field">
+                                            <option value="sales" selected>Sales Report</option>
+                                            <option value="inventory">Inventory Report</option>
+                                            <option value="financial">Financial Report</option>
+                                            <option value="customer">Customer Report</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <div class="control-group">
+                                    <label class="control-label">Default Date Range</label>
+                                    <div class="control-field">
+                                        <select id="defaultDateRange" class="select-field">
+                                            <option value="today">Today</option>
+                                            <option value="yesterday">Yesterday</option>
+                                            <option value="week" selected>This Week</option>
+                                            <option value="month">This Month</option>
+                                            <option value="quarter">This Quarter</option>
+                                            <option value="year">This Year</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <div class="control-group">
+                                    <label class="control-label">Show Charts</label>
+                                    <div class="control-field">
+                                        <label class="toggle-switch">
+                                            <input type="checkbox" checked data-control="showCharts">
+                                            <span class="slider"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                                
+                                <div class="control-group">
+                                    <label class="control-label">Show Summary</label>
+                                    <div class="control-field">
+                                        <label class="toggle-switch">
+                                            <input type="checkbox" checked data-control="showSummary">
+                                            <span class="slider"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                                
+                                <div class="control-group">
+                                    <label class="control-label">Export Format</label>
+                                    <div class="control-field">
+                                        <select id="exportFormat" class="select-field">
+                                            <option value="pdf" selected>PDF</option>
+                                            <option value="excel">Excel</option>
+                                            <option value="csv">CSV</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <div class="control-group">
+                                    <label class="control-label">Chart Type</label>
+                                    <div class="control-field">
+                                        <select id="chartType" class="select-field">
+                                            <option value="bar" selected>Bar Chart</option>
+                                            <option value="line">Line Chart</option>
+                                            <option value="pie">Pie Chart</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <div class="control-group">
+                                    <label class="control-label">Color Scheme</label>
+                                    <div class="control-field">
+                                        <select id="reportColorScheme" class="select-field">
+                                            <option value="default" selected>Default</option>
+                                            <option value="monochrome">Monochrome</option>
+                                            <option value="pastel">Pastel</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-actions">
+                                    <button class="btn-primary preview-btn" data-section="report">Preview</button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button id="resetAllCustomizations" class="btn-secondary">Reset to Default</button>
+                            <button id="saveAllCustomizations" class="btn-primary">Save Customizations</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <footer>
+                <p><a href="#">Privacy Policy</a> | <a href="#">Terms of Use</a> | @2025msh@gmail.com</p>
+            </footer>
+        </div>
+    </main>
+
+    <div id="previewModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Customization Preview</h3>
+                <button class="modal-close" id="modalCloseBtn">&times;</button>
+            </div>
+            <div id="modalPreviewArea" class="modal-preview-area">
+                <!-- Preview content will be inserted here -->
+            </div>
+            <div class="modal-footer">
+                <button id="modalCancelBtn" class="btn-secondary">Cancel</button>
+                <button id="modalConfirmBtn" class="btn-primary">Confirm & Apply</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Tab functionality
+    const tabBtns = document.querySelectorAll('.tab-btn');
+    const tabContents = document.querySelectorAll('.tab-content');
+
+    tabBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const tabId = this.getAttribute('data-tab');
+
+            // Remove active class from all tabs and contents
+            tabBtns.forEach(tab => tab.classList.remove('active'));
+            tabContents.forEach(content => content.classList.remove('active'));
+
+            // Add active class to current tab and content
+            this.classList.add('active');
+            document.getElementById(tabId).classList.add('active');
+        });
+    });
+
+    // Edit profile functionality
+    const editProfileBtn = document.getElementById('edit-profile-btn');
+    const cancelBtn = document.getElementById('cancel-btn');
+    const saveBtn = document.getElementById('save-btn');
+    const readonlyFields = document.querySelectorAll('.readonly-field');
+    const selectFields = document.querySelectorAll('select');
+    const radioInputs = document.querySelectorAll('input[type="radio"]');
+
+    if (editProfileBtn) {
+        editProfileBtn.addEventListener('click', function() {
+            // Enable editing
+            readonlyFields.forEach(field => {
+                field.removeAttribute('readonly');
+                field.classList.remove('readonly-field');
+            });
+
+            selectFields.forEach(select => {
+                select.disabled = false;
+            });
+
+            radioInputs.forEach(radio => {
+                radio.disabled = false;
+            });
+
+            // Show cancel and save buttons
+            cancelBtn.classList.remove('hidden');
+            saveBtn.classList.remove('hidden');
+
+            // Hide edit button
+            this.classList.add('hidden');
+        });
+    }
+
+    if (cancelBtn) {
+        cancelBtn.addEventListener('click', function() {
+            // Disable editing
+            readonlyFields.forEach(field => {
+                field.setAttribute('readonly', true);
+                field.classList.add('readonly-field');
+            });
+
+            selectFields.forEach(select => {
+                select.disabled = true;
+            });
+
+            radioInputs.forEach(radio => {
+                radio.disabled = true;
+            });
+
+            // Hide cancel and save buttons
+            this.classList.add('hidden');
+            saveBtn.classList.add('hidden');
+
+            // Show edit button
+            editProfileBtn.classList.remove('hidden');
+        });
+    }
+
+    if (saveBtn) {
+        saveBtn.addEventListener('click', function() {
+            // In a real application, you would save the data here
+            alert('Profile updated successfully!');
+
+            // Disable editing after save
+            readonlyFields.forEach(field => {
+                field.setAttribute('readonly', true);
+                field.classList.add('readonly-field');
+            });
+
+            selectFields.forEach(select => {
+                select.disabled = true;
+            });
+
+            radioInputs.forEach(radio => {
+                radio.disabled = true;
+            });
+
+            // Hide cancel and save buttons
+            cancelBtn.classList.add('hidden');
+            this.classList.add('hidden');
+
+            // Show edit button
+            editProfileBtn.classList.remove('hidden');
+        });
+    }
+
+    // Calendar icon functionality
+    const calendarIcon = document.getElementById('calendar-icon');
+    if (calendarIcon) {
+        calendarIcon.addEventListener('click', function() {
+            const dobInput = document.getElementById('dob-input');
+            if (!dobInput.hasAttribute('readonly')) {
+                // In a real application, you would show a date picker here
+                dobInput.type = 'date';
+                dobInput.focus();
+
+                // Change back to text when focus is lost
+                dobInput.addEventListener('blur', function() {
+                    if (this.value) {
+                        const date = new Date(this.value);
+                        const options = { year: 'numeric', month: 'long' };
+                        this.value = date.toLocaleDateString('en-US', options);
+                    }
+                    this.type = 'text';
+                });
+            }
+        });
+    }
+
+    // Profile image upload functionality
+    const profileUpload = document.getElementById('profile-upload');
+    const profileInitial = document.getElementById('profile-initial');
+
+    if (profileUpload) {
+        profileUpload.addEventListener('change', function(e) {
+            if (e.target.files && e.target.files[0]) {
+                const reader = new FileReader();
+
+                reader.onload = function(e) {
+                    // In a real application, you would upload the image and update the profile
+                    // For this demo, we'll just show an alert
+                    alert('Profile picture updated! In a real application, the image would be uploaded and displayed here.');
+                };
+
+                reader.readAsDataURL(e.target.files[0]);
+            }
+        });
+    }
+
+    // Color Picker Functionality
+    const colorOptions = document.querySelectorAll('.color-option');
+    const customColorInput = document.getElementById('customColor');
+    const applyCustomColorBtn = document.getElementById('applyCustomColor');
+    const saveColorBtn = document.getElementById('saveColor');
+    const clearSavedBtn = document.getElementById('clearSaved');
+    const savedColorsList = document.getElementById('savedColorsList');
+    const previewIcon = document.querySelector('.preview-icon');
+
+    // Current selected color
+    let currentColor = '#5F9EA0';
+
+    // Initialize from localStorage if available
+    const savedColors = JSON.parse(localStorage.getItem('savedColors')) || [];
+    const lastUsedColor = localStorage.getItem('lastUsedColor') || '#5F9EA0';
+
+    // Apply last used settings
+    currentColor = lastUsedColor;
+    updateIconColor(currentColor);
+    customColorInput.value = currentColor;
+    updateSavedColorsList();
+
+    // Color option click event
+    colorOptions.forEach(option => {
+        option.addEventListener('click', function() {
+            // Remove active class from all options
+            colorOptions.forEach(opt => opt.classList.remove('active'));
+
+            // Add active class to clicked option
+            this.classList.add('active');
+
+            // Get the color from data attribute
+            const color = this.getAttribute('data-color');
+            currentColor = color;
+            updateIconColor(color);
+
+            // Update custom color input to match
+            customColorInput.value = color;
+
+            // Save to localStorage
+            localStorage.setItem('lastUsedColor', color);
+
+            // Update CSS variables for the theme
+            updateThemeColor(color);
+        });
+    });
+
+    // Apply custom color button click event
+    applyCustomColorBtn.addEventListener('click', function() {
+        const color = customColorInput.value;
+        currentColor = color;
+        updateIconColor(color);
+
+        // Remove active class from all predefined options
+        colorOptions.forEach(opt => opt.classList.remove('active'));
+
+        // Save to localStorage
+        localStorage.setItem('lastUsedColor', color);
+
+        // Update CSS variables for the theme
+        updateThemeColor(color);
+    });
+
+    // Save color button click event
+    saveColorBtn.addEventListener('click', function() {
+        // Check if color is already saved
+        if (!savedColors.includes(currentColor)) {
+            savedColors.push(currentColor);
+
+            // Save to localStorage
+            localStorage.setItem('savedColors', JSON.stringify(savedColors));
+
+            // Update the saved colors list
+            updateSavedColorsList();
+        }
+    });
+
+    // Clear saved colors button click event
+    clearSavedBtn.addEventListener('click', function() {
+        // Clear saved colors array
+        savedColors.length = 0;
+
+        // Update localStorage
+        localStorage.setItem('savedColors', JSON.stringify(savedColors));
+
+        // Update the saved colors list
+        updateSavedColorsList();
+    });
+
+    // Function to update icon color
+    function updateIconColor(color) {
+        previewIcon.style.color = color;
+    }
+
+    // Function to update saved colors list
+    function updateSavedColorsList() {
+        // Clear current list
+        savedColorsList.innerHTML = '';
+
+        if (savedColors.length === 0) {
+            savedColorsList.innerHTML = '<div class="empty-message">No saved colors yet</div>';
+            return;
+        }
+
+        // Add each saved color
+        savedColors.forEach(color => {
+            const colorElement = document.createElement('div');
+            colorElement.className = 'saved-color';
+            colorElement.style.backgroundColor = color;
+            colorElement.title = color;
+
+            // Click event to apply saved color
+            colorElement.addEventListener('click', function() {
+                currentColor = color;
+                updateIconColor(color);
+                customColorInput.value = color;
+
+                // Remove active class from all predefined options
+                colorOptions.forEach(opt => opt.classList.remove('active'));
+
+                // Save to localStorage
+                localStorage.setItem('lastUsedColor', color);
+
+                // Update CSS variables for the theme
+                updateThemeColor(color);
+            });
+
+            savedColorsList.appendChild(colorElement);
+        });
+    }
+
+    // Function to update CSS theme variables
+    function updateThemeColor(color) {
+        document.documentElement.style.setProperty('--primary-color', color);
+
+        // Calculate lighter and darker variants
+        const lighterColor = lightenColor(color, 20);
+        const darkerColor = darkenColor(color, 10);
+
+        document.documentElement.style.setProperty('--primary-light', lighterColor);
+        document.documentElement.style.setProperty('--primary-dark', darkerColor);
+
+        // Update sidebar and header background
+        const mainHeader = document.querySelector('.main-header');
+        if(mainHeader) mainHeader.style.backgroundColor = color;
+    }
+
+    // Helper function to lighten a color
+    function lightenColor(color, percent) {
+        const num = parseInt(color.replace("#", ""), 16);
+        const amt = Math.round(2.55 * percent);
+        const R = (num >> 16) + amt;
+        const G = (num >> 8 & 0x00FF) + amt;
+        const B = (num & 0x0000FF) + amt;
+
+        return "#" + (
+            0x1000000 +
+            (R < 255 ? R < 1 ? 0 : R : 255) * 0x10000 +
+            (G < 255 ? G < 1 ? 0 : G : 255) * 0x100 +
+            (B < 255 ? B < 1 ? 0 : B : 255)
+        ).toString(16).slice(1);
+    }
+
+    // Helper function to darken a color
+    function darkenColor(color, percent) {
+        const num = parseInt(color.replace("#", ""), 16);
+        const amt = Math.round(2.55 * percent);
+        const R = (num >> 16) - amt;
+        const G = (num >> 8 & 0x00FF) - amt;
+        const B = (num & 0x0000FF) - amt;
+
+        return "#" + (
+            0x1000000 +
+            (R > 0 ? R : 0) * 0x10000 +
+            (G > 0 ? G : 0) * 0x100 +
+            (B > 0 ? B : 0)
+        ).toString(16).slice(1);
+    }
+
+    // Initialize with the first color option active
+    if (colorOptions.length > 0) {
+        colorOptions[0].classList.add('active');
+        // Initial theme set based on the first option's color
+        updateThemeColor(colorOptions[0].getAttribute('data-color'));
+    }
+
+    const colorInput = document.getElementById("customColor");
+    const icon = document.querySelector(".color-icon");
+
+    colorInput.addEventListener("input", (e) => {
+        icon.style.borderColor = e.target.value; // update border color
+    });
+
+    // --- VOUCHER TYPE SELECTION ---
+    const voucherTypeBoxes = document.querySelectorAll('.voucher-type-box');
+    let selectedVoucherType = 'sale';
+
+    voucherTypeBoxes.forEach(box => {
+        box.addEventListener('click', function() {
+            // Remove active class from all boxes
+            voucherTypeBoxes.forEach(b => b.classList.remove('active'));
+            
+            // Add active class to clicked box
+            this.classList.add('active');
+            
+            // Update selected voucher type
+            selectedVoucherType = this.getAttribute('data-type');
+            
+            // Update preview if modal is open
+            if (activeSection === 'voucher') {
+                const newValues = getCurrentControlValues('voucher');
+                generateVoucherPreview(newValues);
+            }
+        });
+    });
+
+    // --- CUSTOMIZATION LOGIC ---
+
+    const previewModal = document.getElementById('previewModal');
+    const modalCloseBtn = document.getElementById('modalCloseBtn');
+    const modalConfirmBtn = document.getElementById('modalConfirmBtn');
+    const modalCancelBtn = document.getElementById('modalCancelBtn');
+    const modalPreviewArea = document.getElementById('modalPreviewArea');
+    const modalTitle = document.getElementById('modalTitle');
+    const previewBtns = document.querySelectorAll('.preview-btn');
+
+    // Global variable to store the customization state before preview
+    let tempCustomizationState = {};
+    let activeSection = null;
+
+    // Load/Initialize Default Customizations
+    const defaultCustomizations = {
+        voucher: {
+            voucherType: 'sale',
+            voucherTitleInput: 'VOUCHER',
+            shopAddressInput: '123 Main St, Yangon',
+            voucherPrefixInput: 'VCH',
+            receiptPaperSize: '80mm',
+            voucherLogo: null,
+            logoAlignmentSelect: 'center',
+            showDateTime: true,
+            dateFormatSelect: 'dd/mm/yyyy',
+            timeFormatSelect: '12h',
+            dateTimePosition: 'header',
+            showCustomerInfo: true,
+            showPaymentMethod: true,
+            showTerms: true,
+            receiptHeaderText: 'Thank you for your purchase!',
+            voucherTermsText: '1. This voucher is non-refundable.\n2. Valid for 30 days from date of issue.\n3. Must be presented at time of purchase.',
+            lineStyle: 'solid',
+            lineThickness: 1,
+            lineSpacing: 10,
+            voucherBorderStyle: 'solid',
+            voucherBorderColor: '#000000',
+            voucherBgColor: '#FFFFFF',
+            voucherHeaderColor: '#5F9EA0',
+            fontFamily: 'monospace',
+            fontSize: 14,
+            fontColor: '#000000'
+        },
+        dashboard: {
+            dashboardView: 'overview',
+            dashboardCardStyle: 'default',
+            dashboardBgColor: '#f8fafc',
+            showSalesChart: true,
+            showRecentActivity: true,
+            showQuickStats: true
+        },
+        inventory: {
+            inventoryView: 'list',
+            showBarcodeColumn: true,
+            showStockAlerts: true,
+            lowStockThreshold: 10,
+            enableBarcodeScanning: true,
+            showProductImages: true,
+            itemsPerPage: '25'
+        },
+        login: {
+            loginBgColor: '#f8fafc',
+            loginFormBg: '#ffffff',
+            loginBtnColor: '#5F9EA0',
+            showLoginLogo: true,
+            showRememberMe: true,
+            showSocialLogin: false
+        },
+        report: {
+            defaultReportType: 'sales',
+            defaultDateRange: 'week',
+            showCharts: true,
+            showSummary: true,
+            exportFormat: 'pdf',
+            chartType: 'bar',
+            reportColorScheme: 'default'
+        }
+    };
+
+    let currentCustomizations = JSON.parse(localStorage.getItem('posCustomizations')) || defaultCustomizations;
+
+    // Function to get current values from a section's controls
+    function getCurrentControlValues(sectionId) {
+        const values = {};
+        
+        if (sectionId === 'voucher') {
+            const controls = document.querySelector(`#sale-section .customize-item[data-section="voucher"]`);
+            if (!controls) return values;
+
+            values.voucherType = selectedVoucherType;
+            values.voucherTitleInput = controls.querySelector('#voucherTitleInput').value;
+            values.shopAddressInput = controls.querySelector('#shopAddressInput').value;
+            values.voucherPrefixInput = controls.querySelector('#voucherPrefixInput').value;
+            values.receiptPaperSize = controls.querySelector('#receiptPaperSize').value;
+            const logoInput = controls.querySelector('#voucherLogo');
+            values.voucherLogo = logoInput.files.length > 0 ? URL.createObjectURL(logoInput.files[0]) : currentCustomizations.voucher.voucherLogo;
+            values.logoAlignmentSelect = controls.querySelector('#logoAlignmentSelect').value;
+            values.dateFormatSelect = controls.querySelector('#dateFormatSelect').value;
+            values.timeFormatSelect = controls.querySelector('#timeFormatSelect').value;
+            values.dateTimePosition = controls.querySelector('#dateTimePosition').value;
+            values.receiptHeaderText = controls.querySelector('#receiptHeaderText').value;
+            values.voucherTermsText = controls.querySelector('#voucherTermsText').value;
+            values.lineStyle = controls.querySelector('#lineStyleSelect').value;
+            values.lineThickness = controls.querySelector('#lineThicknessInput').value;
+            values.lineSpacing = controls.querySelector('#lineSpacingInput').value;
+            values.voucherBorderStyle = controls.querySelector('#voucherBorderStyle').value;
+            values.voucherBorderColor = controls.querySelector('#voucherBorderColor').value;
+            values.voucherBgColor = controls.querySelector('#voucherBgColor').value;
+            values.voucherHeaderColor = controls.querySelector('#voucherHeaderColor').value;
+            values.fontFamily = controls.querySelector('#fontFamilySelect').value;
+            values.fontSize = controls.querySelector('#fontSizeInput').value;
+            values.fontColor = controls.querySelector('#fontColorInput').value;
+            
+            // Toggle switches
+            controls.querySelectorAll('[data-control]').forEach(input => {
+                const key = input.getAttribute('data-control');
+                if (input.type === 'checkbox') {
+                    values[key] = input.checked;
+                }
+            });
+        } else if (sectionId === 'dashboard') {
+            const controls = document.querySelector('#dashboard-section .customize-item');
+            if (!controls) return values;
+
+            values.dashboardView = document.getElementById('dashboardView').value;
+            values.dashboardCardStyle = document.getElementById('dashboardCardStyle').value;
+            values.dashboardBgColor = document.getElementById('dashboardBgColor').value;
+            values.showSalesChart = document.querySelector('[data-control="showSalesChart"]').checked;
+            values.showRecentActivity = document.querySelector('[data-control="showRecentActivity"]').checked;
+            values.showQuickStats = document.querySelector('[data-control="showQuickStats"]').checked;
+        } else if (sectionId === 'inventory') {
+            const controls = document.querySelector('#inventory-section .customize-item');
+            if (!controls) return values;
+
+            values.inventoryView = document.getElementById('inventoryView').value;
+            values.showBarcodeColumn = document.querySelector('[data-control="showBarcodeColumn"]').checked;
+            values.showStockAlerts = document.querySelector('[data-control="showStockAlerts"]').checked;
+            values.lowStockThreshold = parseInt(document.getElementById('lowStockThreshold').value);
+            values.enableBarcodeScanning = document.querySelector('[data-control="enableBarcodeScanning"]').checked;
+            values.showProductImages = document.querySelector('[data-control="showProductImages"]').checked;
+            values.itemsPerPage = document.getElementById('itemsPerPage').value;
+        } else if (sectionId === 'login') {
+            const controls = document.querySelector('#login-section .customize-item');
+            if (!controls) return values;
+
+            values.loginBgColor = document.getElementById('loginBgColor').value;
+            values.loginFormBg = document.getElementById('loginFormBg').value;
+            values.loginBtnColor = document.getElementById('loginBtnColor').value;
+            values.showLoginLogo = document.querySelector('[data-control="showLoginLogo"]').checked;
+            values.showRememberMe = document.querySelector('[data-control="showRememberMe"]').checked;
+            values.showSocialLogin = document.querySelector('[data-control="showSocialLogin"]').checked;
+        } else if (sectionId === 'report') {
+            const controls = document.querySelector('#report-section .customize-item');
+            if (!controls) return values;
+
+            values.defaultReportType = document.getElementById('defaultReportType').value;
+            values.defaultDateRange = document.getElementById('defaultDateRange').value;
+            values.showCharts = document.querySelector('[data-control="showCharts"]').checked;
+            values.showSummary = document.querySelector('[data-control="showSummary"]').checked;
+            values.exportFormat = document.getElementById('exportFormat').value;
+            values.chartType = document.getElementById('chartType').value;
+            values.reportColorScheme = document.getElementById('reportColorScheme').value;
+        }
+        
+        return values;
+    }
+
+    // Function to apply values to the controls
+    function applyControlValues(sectionId, values) {
+        if (sectionId === 'voucher') {
+            const controls = document.querySelector(`#sale-section .customize-item[data-section="voucher"]`);
+            if (!controls) return;
+
+            // Set voucher type
+            selectedVoucherType = values.voucherType || 'sale';
+            voucherTypeBoxes.forEach(box => {
+                box.classList.remove('active');
+                if (box.getAttribute('data-type') === selectedVoucherType) {
+                    box.classList.add('active');
+                }
+            });
+            
+            controls.querySelector('#voucherTitleInput').value = values.voucherTitleInput;
+            controls.querySelector('#shopAddressInput').value = values.shopAddressInput;
+            controls.querySelector('#voucherPrefixInput').value = values.voucherPrefixInput;
+            controls.querySelector('#receiptPaperSize').value = values.receiptPaperSize;
+            controls.querySelector('#logoAlignmentSelect').value = values.logoAlignmentSelect;
+            controls.querySelector('#dateFormatSelect').value = values.dateFormatSelect;
+            controls.querySelector('#timeFormatSelect').value = values.timeFormatSelect;
+            controls.querySelector('#dateTimePosition').value = values.dateTimePosition;
+            controls.querySelector('#receiptHeaderText').value = values.receiptHeaderText;
+            controls.querySelector('#voucherTermsText').value = values.voucherTermsText;
+            controls.querySelector('#lineStyleSelect').value = values.lineStyle;
+            controls.querySelector('#lineThicknessInput').value = values.lineThickness;
+            controls.querySelector('#lineSpacingInput').value = values.lineSpacing;
+            controls.querySelector('#voucherBorderStyle').value = values.voucherBorderStyle;
+            controls.querySelector('#voucherBorderColor').value = values.voucherBorderColor;
+            controls.querySelector('#voucherBgColor').value = values.voucherBgColor;
+            controls.querySelector('#voucherHeaderColor').value = values.voucherHeaderColor;
+            controls.querySelector('#fontFamilySelect').value = values.fontFamily;
+            controls.querySelector('#fontSizeInput').value = values.fontSize;
+            controls.querySelector('#fontColorInput').value = values.fontColor;
+            
+            // Toggle switches
+            controls.querySelectorAll('[data-control]').forEach(input => {
+                const key = input.getAttribute('data-control');
+                if (input.type === 'checkbox') {
+                    input.checked = values[key];
+                }
+            });
+        } else if (sectionId === 'dashboard') {
+            document.getElementById('dashboardView').value = values.dashboardView;
+            document.getElementById('dashboardCardStyle').value = values.dashboardCardStyle;
+            document.getElementById('dashboardBgColor').value = values.dashboardBgColor;
+            document.querySelector('[data-control="showSalesChart"]').checked = values.showSalesChart;
+            document.querySelector('[data-control="showRecentActivity"]').checked = values.showRecentActivity;
+            document.querySelector('[data-control="showQuickStats"]').checked = values.showQuickStats;
+        } else if (sectionId === 'inventory') {
+            document.getElementById('inventoryView').value = values.inventoryView;
+            document.querySelector('[data-control="showBarcodeColumn"]').checked = values.showBarcodeColumn;
+            document.querySelector('[data-control="showStockAlerts"]').checked = values.showStockAlerts;
+            document.getElementById('lowStockThreshold').value = values.lowStockThreshold;
+            document.querySelector('[data-control="enableBarcodeScanning"]').checked = values.enableBarcodeScanning;
+            document.querySelector('[data-control="showProductImages"]').checked = values.showProductImages;
+            document.getElementById('itemsPerPage').value = values.itemsPerPage;
+        } else if (sectionId === 'login') {
+            document.getElementById('loginBgColor').value = values.loginBgColor;
+            document.getElementById('loginFormBg').value = values.loginFormBg;
+            document.getElementById('loginBtnColor').value = values.loginBtnColor;
+            document.querySelector('[data-control="showLoginLogo"]').checked = values.showLoginLogo;
+            document.querySelector('[data-control="showRememberMe"]').checked = values.showRememberMe;
+            document.querySelector('[data-control="showSocialLogin"]').checked = values.showSocialLogin;
+        } else if (sectionId === 'report') {
+            document.getElementById('defaultReportType').value = values.defaultReportType;
+            document.getElementById('defaultDateRange').value = values.defaultDateRange;
+            document.querySelector('[data-control="showCharts"]').checked = values.showCharts;
+            document.querySelector('[data-control="showSummary"]').checked = values.showSummary;
+            document.getElementById('exportFormat').value = values.exportFormat;
+            document.getElementById('chartType').value = values.chartType;
+            document.getElementById('reportColorScheme').value = values.reportColorScheme;
+        }
+    }
+    
+    // Initial load: Apply saved customizations to controls
+    Object.keys(currentCustomizations).forEach(section => {
+        applyControlValues(section, currentCustomizations[section]);
+    });
+
+    // Preview Button Click Handler - FIXED VERSION
+    previewBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            activeSection = this.getAttribute('data-section');
+            tempCustomizationState = JSON.parse(JSON.stringify(currentCustomizations)); // Deep copy backup
+            
+            const newValues = getCurrentControlValues(activeSection);
+            
+            modalTitle.textContent = `${activeSection.charAt(0).toUpperCase() + activeSection.slice(1)} Preview`;
+            
+            // Generate and display preview content based on section
+            if (activeSection === 'voucher') {
+                generateVoucherPreview(newValues);
+            } else if (activeSection === 'dashboard') {
+                generateDashboardPreview(newValues);
+            } else if (activeSection === 'inventory') {
+                generateInventoryPreview(newValues);
+            } else if (activeSection === 'login') {
+                generateLoginPreview(newValues);
+            } else if (activeSection === 'report') {
+                generateReportPreview(newValues);
+            }
+
+            // Show Modal
+            previewModal.classList.add('visible');
+        });
+    });
+
+    // Close Modal Function
+    function closeModal() {
+        // Clear any temporary logo URLs
+        const tempLogoUrl = getCurrentControlValues('voucher').voucherLogo;
+        if (activeSection === 'voucher' && tempLogoUrl && !tempLogoUrl.startsWith('data:')) {
+            URL.revokeObjectURL(tempLogoUrl);
+        }
+
+        modalPreviewArea.innerHTML = '';
+        previewModal.classList.remove('visible');
+    }
+
+    // Modal Close/Cancel Handlers
+    modalCloseBtn.addEventListener('click', closeModal);
+    modalCancelBtn.addEventListener('click', function() {
+        // Revert controls to the state before opening the modal
+        if (activeSection) {
+            applyControlValues(activeSection, tempCustomizationState[activeSection]);
+        }
+        closeModal();
+    });
+
+    // Modal Confirm Handler
+    modalConfirmBtn.addEventListener('click', function() {
+        const newValues = getCurrentControlValues(activeSection);
+        // Apply the new values permanently (to the global state and storage)
+        currentCustomizations[activeSection] = newValues;
+        localStorage.setItem('posCustomizations', JSON.stringify(currentCustomizations));
+        alert(`${activeSection.charAt(0).toUpperCase() + activeSection.slice(1)} customization applied and saved!`);
+        closeModal();
+    });
+
+    // Save All Customizations Button
+    document.getElementById('saveAllCustomizations').addEventListener('click', function() {
+        // Get all current control values across all sections
+        const allNewValues = {};
+        ['voucher', 'dashboard', 'inventory', 'login', 'report'].forEach(section => {
+            allNewValues[section] = getCurrentControlValues(section);
+        });
+
+        // Apply and save
+        currentCustomizations = allNewValues;
+        localStorage.setItem('posCustomizations', JSON.stringify(currentCustomizations));
+        alert('All customizations saved successfully!');
+    });
+
+    // Reset to Default Button
+    document.getElementById('resetAllCustomizations').addEventListener('click', function() {
+        if (confirm('Are you sure you want to reset ALL customizations to default settings?')) {
+            currentCustomizations = JSON.parse(JSON.stringify(defaultCustomizations)); // Reset to deep copy of default
+            localStorage.removeItem('posCustomizations');
+            
+            // Update controls to reflect default settings
+            Object.keys(currentCustomizations).forEach(section => {
+                applyControlValues(section, currentCustomizations[section]);
+            });
+
+            // Clear file inputs
+            document.getElementById('voucherLogo').value = '';
+
+            alert('All customizations have been reset to default!');
+        }
+    });
+
+    // --- Specific Preview Functions ---
+
+    function generateVoucherPreview(settings) {
+        const voucherType = settings.voucherType || selectedVoucherType;
+        const voucherTitle = settings.voucherTitleInput || 'VOUCHER';
+        const shopAddress = settings.shopAddressInput || '123 Main St, Yangon';
+        const voucherPrefix = settings.voucherPrefixInput || 'VCH';
+        
+        // Date & Time formatting
+        const now = new Date();
+        let dateString = '';
+        let timeString = '';
+        
+        if (settings.showDateTime) {
+            // Date formatting
+            switch(settings.dateFormatSelect) {
+                case 'dd/mm/yyyy':
+                    dateString = now.toLocaleDateString('en-GB');
+                    break;
+                case 'mm/dd/yyyy':
+                    dateString = now.toLocaleDateString('en-US');
+                    break;
+                case 'yyyy-mm-dd':
+                    dateString = now.toISOString().split('T')[0];
+                    break;
+                case 'dd-mm-yyyy':
+                    dateString = now.getDate().toString().padStart(2, '0') + '-' + 
+                                (now.getMonth() + 1).toString().padStart(2, '0') + '-' + 
+                                now.getFullYear();
+                    break;
+                default:
+                    dateString = now.toLocaleDateString();
+            }
+            
+            // Time formatting
+            if (settings.timeFormatSelect === '24h') {
+                timeString = now.toLocaleTimeString('en-GB', {hour12: false});
+            } else {
+                timeString = now.toLocaleTimeString('en-US', {hour12: true});
+            }
+        }
+        
+        // Logo alignment
+        let logoAlignment = settings.logoAlignmentSelect || 'center';
+        let logoContainerStyle = '';
+        
+        if (logoAlignment === 'center') {
+            logoContainerStyle = 'text-align: center;';
+        } else if (logoAlignment === 'left') {
+            logoContainerStyle = 'text-align: left;';
+        } else if (logoAlignment === 'right') {
+            logoContainerStyle = 'text-align: right;';
+        }
+        
+        let logoHtml = `<div class="placeholder-logo" style="margin-left: auto; margin-right: auto; ${logoAlignment !== 'center' ? 'float: ' + logoAlignment + ';' : ''}">LOGO HERE</div>`;
+        if (settings.voucherLogo && !settings.voucherLogo.includes('null')) {
+            logoHtml = `<img src="${settings.voucherLogo}" style="max-width: 100px; display: inline-block; ${logoAlignment !== 'center' ? 'float: ' + logoAlignment + ';' : ''}" alt="Voucher Logo">`;
+        }
+        
+        // Border style
+        const borderStyle = settings.voucherBorderStyle === 'none' ? '' : 
+            `border: 2px ${settings.voucherBorderStyle} ${settings.voucherBorderColor};`;
+        
+        // Divider style
+        const dividerStyle = `
+            border-top: ${settings.lineThickness}px ${settings.lineStyle} ${settings.fontColor};
+            margin: ${settings.lineSpacing}px 0;
+        `;
+        
+        // Date & Time HTML based on position
+        let dateTimeHtml = '';
+        if (settings.showDateTime) {
+            const dateTimeElement = `<div style="text-align: center; margin: 10px 0;">
+                <strong>Date:</strong> ${dateString} | <strong>Time:</strong> ${timeString}
+            </div>`;
+            
+            if (settings.dateTimePosition === 'header') {
+                dateTimeHtml = dateTimeElement;
+            } else if (settings.dateTimePosition === 'body') {
+                dateTimeHtml = dateTimeElement;
+            } else if (settings.dateTimePosition === 'footer') {
+                dateTimeHtml = dateTimeElement;
+            }
+        }
+        
+        // Use font settings
+        const fontFamily = settings.fontFamily;
+        const fontSize = settings.fontSize;
+        const fontColor = settings.fontColor;
+        
+        const voucherHtml = `
+            <div class="voucher-preview" style="${borderStyle} background-color: ${settings.voucherBgColor}; padding: 20px; max-width: ${settings.receiptPaperSize === 'a4' ? '100%' : settings.receiptPaperSize}; font-family: ${fontFamily}, monospace; font-size: ${fontSize}px; color: ${fontColor}; margin: 0 auto;">
+                <div class="voucher-header" style="${logoContainerStyle} background-color: ${settings.voucherHeaderColor}; color: white; padding: 10px; margin: -20px -20px 15px -20px;">
+                    ${logoHtml}
+                    <div style="${logoAlignment !== 'center' ? 'clear: both; text-align: center;' : 'text-align: center;'}">
+                        <h2 style="margin: 10px 0 5px 0;">${voucherTitle}</h2>
+                        <p style="margin: 0;">${shopAddress}</p>
+                        <p style="margin: 0;">No: ${voucherPrefix}-${Math.floor(1000 + Math.random() * 9000)}</p>
+                    </div>
+                </div>
+                
+                ${settings.dateTimePosition === 'header' && settings.showDateTime ? dateTimeHtml : ''}
+                
+                <div class="voucher-body">
+                    ${settings.dateTimePosition === 'body' && settings.showDateTime ? dateTimeHtml : ''}
+                    
+                    ${voucherType === 'rental' || voucherType === 'both' ? `
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                        <strong>Rental Period:</strong> <span>3 Days</span>
+                    </div>
+                    ` : ''}
+                    
+                    ${settings.showCustomerInfo ? `
+                    <div style="margin-bottom: 15px;">
+                        <strong>Customer:</strong> John Doe<br>
+                        <strong>Phone:</strong> 09-123456789
+                    </div>
+                    ` : ''}
+                    
+                    <table style="width: 100%; border-collapse: collapse; margin-bottom: 15px;">
+                        <thead>
+                            <tr style="border-bottom: 1px solid #ddd;">
+                                <th style="text-align: left; padding: 5px;">Item</th>
+                                <th style="text-align: center; padding: 5px;">Qty</th>
+                                <th style="text-align: right; padding: 5px;">Price</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="padding: 5px;">${voucherType === 'sale' ? 'Product A' : 'Equipment X'}</td>
+                                <td style="text-align: center; padding: 5px;">1</td>
+                                <td style="text-align: right; padding: 5px;">${voucherType === 'sale' ? '10,000' : '5,000'}/day</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 5px;">${voucherType === 'sale' ? 'Product B' : 'Equipment Y'}</td>
+                                <td style="text-align: center; padding: 5px;">2</td>
+                                <td style="text-align: right; padding: 5px;">${voucherType === 'sale' ? '15,000' : '7,500'}/day</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <div class="receipt-divider" style="${dividerStyle}"></div>
+                    
+                    <div style="border-top: 1px solid #ddd; padding-top: 10px; margin-bottom: 15px;">
+                        <div style="display: flex; justify-content: space-between;">
+                            <strong>Subtotal:</strong> <span>${voucherType === 'sale' ? '40,000' : '20,000'} MMK</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between;">
+                            <strong>Tax (5%):</strong> <span>${voucherType === 'sale' ? '2,000' : '1,000'} MMK</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 1.1em;">
+                            <strong>TOTAL:</strong> <span>${voucherType === 'sale' ? '42,000' : '21,000'} MMK</span>
+                        </div>
+                    </div>
+                    
+                    ${settings.showPaymentMethod ? `
+                    <div style="margin-bottom: 15px;">
+                        <strong>Payment Method:</strong> Cash
+                    </div>
+                    ` : ''}
+                    
+                    ${settings.showTerms ? `
+                    <div style="margin-top: 15px; padding-top: 10px; border-top: 1px dashed #ddd;">
+                        <strong>Terms & Conditions:</strong>
+                        <div style="font-size: 0.9em; margin-top: 5px;">${settings.voucherTermsText.replace(/\n/g, '<br>')}</div>
+                    </div>
+                    ` : ''}
+                </div>
+                
+                ${settings.dateTimePosition === 'footer' && settings.showDateTime ? dateTimeHtml : ''}
+                
+                <div class="voucher-footer" style="text-align: center; margin-top: 15px; padding-top: 10px; border-top: 1px dashed #ddd;">
+                    <p style="margin: 0; font-size: 0.9em;">${settings.receiptHeaderText}</p>
+                </div>
+            </div>
+        `;
+        
+        modalPreviewArea.innerHTML = voucherHtml;
+    }
+
+    function generateDashboardPreview(settings) {
+        const dashboardHtml = `
+            <div style="background: ${settings.dashboardBgColor}; min-height: 300px; padding: 20px; width: 100%;">
+                <h3 style="margin-top: 0;">Dashboard Preview - ${settings.dashboardView} View</h3>
+                
+                ${settings.showQuickStats ? `
+                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 20px;">
+                    <div style="background: white; padding: 15px; border-radius: 8px; text-align: center; ${settings.dashboardCardStyle === 'bordered' ? 'border: 1px solid #ddd;' : ''} ${settings.dashboardCardStyle === 'minimal' ? 'box-shadow: none; background: transparent;' : 'box-shadow: 0 2px 5px rgba(0,0,0,0.05);'}">
+                        <div style="font-size: 24px; color: #5F9EA0; margin-bottom: 5px;"><i class="fas fa-shopping-cart"></i></div>
+                        <div style="font-size: 12px; color: #666;">Today's Sales</div>
+                        <div style="font-weight: bold; font-size: 18px;">450,000 MMK</div>
+                    </div>
+                    <div style="background: white; padding: 15px; border-radius: 8px; text-align: center; ${settings.dashboardCardStyle === 'bordered' ? 'border: 1px solid #ddd;' : ''} ${settings.dashboardCardStyle === 'minimal' ? 'box-shadow: none; background: transparent;' : 'box-shadow: 0 2px 5px rgba(0,0,0,0.05);'}">
+                        <div style="font-size: 24px; color: #4CAF50; margin-bottom: 5px;"><i class="fas fa-box"></i></div>
+                        <div style="font-size: 12px; color: #666;">Products Sold</div>
+                        <div style="font-weight: bold; font-size: 18px;">42</div>
+                    </div>
+                    <div style="background: white; padding: 15px; border-radius: 8px; text-align: center; ${settings.dashboardCardStyle === 'bordered' ? 'border: 1px solid #ddd;' : ''} ${settings.dashboardCardStyle === 'minimal' ? 'box-shadow: none; background: transparent;' : 'box-shadow: 0 2px 5px rgba(0,0,0,0.05);'}">
+                        <div style="font-size: 24px; color: #FF9800; margin-bottom: 5px;"><i class="fas fa-users"></i></div>
+                        <div style="font-size: 12px; color: #666;">New Customers</div>
+                        <div style="font-weight: bold; font-size: 18px;">8</div>
+                    </div>
+                    <div style="background: white; padding: 15px; border-radius: 8px; text-align: center; ${settings.dashboardCardStyle === 'bordered' ? 'border: 1px solid #ddd;' : ''} ${settings.dashboardCardStyle === 'minimal' ? 'box-shadow: none; background: transparent;' : 'box-shadow: 0 2px 5px rgba(0,0,0,0.05);'}">
+                        <div style="font-size: 24px; color: #F44336; margin-bottom: 5px;"><i class="fas fa-exclamation-triangle"></i></div>
+                        <div style="font-size: 12px; color: #666;">Low Stock</div>
+                        <div style="font-weight: bold; font-size: 18px;">3</div>
+                    </div>
+                </div>
+                ` : ''}
+                
+                <div style="display: flex; gap: 20px;">
+                    <div style="flex: ${settings.showSalesChart ? '7' : '12'};">
+                        ${settings.showSalesChart ? `
+                        <div style="background: white; padding: 15px; border-radius: 8px; margin-bottom: 20px; ${settings.dashboardCardStyle === 'bordered' ? 'border: 1px solid #ddd;' : ''} ${settings.dashboardCardStyle === 'minimal' ? 'box-shadow: none; background: transparent;' : 'box-shadow: 0 2px 5px rgba(0,0,0,0.05);'}">
+                            <h4 style="margin-top: 0;">Sales Chart</h4>
+                            <div style="height: 200px; background: linear-gradient(to bottom, #f8fafc, #e2e8f0); display: flex; align-items: flex-end; justify-content: space-around; padding: 10px;">
+                                <div style="background: #5F9EA0; width: 30px; height: 80%;"></div>
+                                <div style="background: #5F9EA0; width: 30px; height: 60%;"></div>
+                                <div style="background: #5F9EA0; width: 30px; height: 90%;"></div>
+                                <div style="background: #5F9EA0; width: 30px; height: 70%;"></div>
+                                <div style="background: #5F9EA0; width: 30px; height: 85%;"></div>
+                                <div style="background: #5F9EA0; width: 30px; height: 50%;"></div>
+                                <div style="background: #5F9EA0; width: 30px; height: 95%;"></div>
+                            </div>
+                        </div>
+                        ` : ''}
+                        
+                        ${settings.showRecentActivity ? `
+                        <div style="background: white; padding: 15px; border-radius: 8px; ${settings.dashboardCardStyle === 'bordered' ? 'border: 1px solid #ddd;' : ''} ${settings.dashboardCardStyle === 'minimal' ? 'box-shadow: none; background: transparent;' : 'box-shadow: 0 2px 5px rgba(0,0,0,0.05);'}">
+                            <h4 style="margin-top: 0;">Recent Activity</h4>
+                            <div style="display: flex; align-items: center; padding: 10px 0; border-bottom: 1px solid #f0f0f0;">
+                                <div style="width: 40px; height: 40px; background: #5F9EA0; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; margin-right: 10px;">
+                                    <i class="fas fa-shopping-cart"></i>
+                                </div>
+                                <div>
+                                    <div style="font-weight: bold;">New Sale</div>
+                                    <div style="font-size: 12px; color: #666;">Customer: John Doe • Amount: 25,000 MMK</div>
+                                </div>
+                            </div>
+                            <div style="display: flex; align-items: center; padding: 10px 0; border-bottom: 1px solid #f0f0f0;">
+                                <div style="width: 40px; height: 40px; background: #4CAF50; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; margin-right: 10px;">
+                                    <i class="fas fa-box"></i>
+                                </div>
+                                <div>
+                                    <div style="font-weight: bold;">Stock Updated</div>
+                                    <div style="font-size: 12px; color: #666;">Product: iPhone 13 • New stock: 15</div>
+                                </div>
+                            </div>
+                            <div style="display: flex; align-items: center; padding: 10px 0;">
+                                <div style="width: 40px; height: 40px; background: #FF9800; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; margin-right: 10px;">
+                                    <i class="fas fa-user-plus"></i>
+                                </div>
+                                <div>
+                                    <div style="font-weight: bold;">New Customer</div>
+                                    <div style="font-size: 12px; color: #666;">Name: Jane Smith • Phone: 09-123456789</div>
+                                </div>
+                            </div>
+                        </div>
+                        ` : ''}
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        modalPreviewArea.innerHTML = dashboardHtml;
+    }
+
+    function generateInventoryPreview(settings) {
+        const inventoryHtml = `
+            <div style="background: #f8fafc; min-height: 300px; padding: 20px; width: 100%;">
+                <h3 style="margin-top: 0;">Inventory Preview - ${settings.inventoryView} View</h3>
+                
+                <div style="margin-bottom: 15px; display: flex; justify-content: space-between;">
+                    <div style="display: flex; gap: 10px;">
+                        <button style="padding: 8px 15px; background: #5F9EA0; color: white; border: none; border-radius: 5px;">Add Product</button>
+                        <button style="padding: 8px 15px; background: white; border: 1px solid #ddd; border-radius: 5px;">Import</button>
+                        <button style="padding: 8px 15px; background: white; border: 1px solid #ddd; border-radius: 5px;">Export</button>
+                    </div>
+                    <div>
+                        <input type="text" placeholder="Search products..." style="padding: 8px 15px; border: 1px solid #ddd; border-radius: 5px; width: 200px;">
+                    </div>
+                </div>
+                
+                ${settings.inventoryView === 'table' ? `
+                <div style="background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <thead style="background: #f8fafc;">
+                            <tr>
+                                <th style="padding: 12px 15px; text-align: left; border-bottom: 1px solid #e2e8f0;">Product</th>
+                                ${settings.showBarcodeColumn ? '<th style="padding: 12px 15px; text-align: left; border-bottom: 1px solid #e2e8f0;">Barcode</th>' : ''}
+                                <th style="padding: 12px 15px; text-align: left; border-bottom: 1px solid #e2e8f0;">Category</th>
+                                <th style="padding: 12px 15px; text-align: left; border-bottom: 1px solid #e2e8f0;">Price</th>
+                                <th style="padding: 12px 15px; text-align: left; border-bottom: 1px solid #e2e8f0;">Stock</th>
+                                <th style="padding: 12px 15px; text-align: left; border-bottom: 1px solid #e2e8f0;">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="padding: 12px 15px; border-bottom: 1px solid #f1f1f1;">
+                                    ${settings.showProductImages ? '<div style="width: 40px; height: 40px; background: #e2e8f0; border-radius: 5px; display: inline-block; vertical-align: middle; margin-right: 10px;"></div>' : ''}
+                                    iPhone 13
+                                </td>
+                                ${settings.showBarcodeColumn ? '<td style="padding: 12px 15px; border-bottom: 1px solid #f1f1f1;">123456789012</td>' : ''}
+                                <td style="padding: 12px 15px; border-bottom: 1px solid #f1f1f1;">Electronics</td>
+                                <td style="padding: 12px 15px; border-bottom: 1px solid #f1f1f1;">1,200,000 MMK</td>
+                                <td style="padding: 12px 15px; border-bottom: 1px solid #f1f1f1;">15</td>
+                                <td style="padding: 12px 15px; border-bottom: 1px solid #f1f1f1;">
+                                    ${settings.showStockAlerts && 15 <= settings.lowStockThreshold ? '<span style="color: #F44336; font-weight: bold;">Low Stock</span>' : '<span style="color: #4CAF50;">In Stock</span>'}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 12px 15px; border-bottom: 1px solid #f1f1f1;">
+                                    ${settings.showProductImages ? '<div style="width: 40px; height: 40px; background: #e2e8f0; border-radius: 5px; display: inline-block; vertical-align: middle; margin-right: 10px;"></div>' : ''}
+                                    Samsung Galaxy S21
+                                </td>
+                                ${settings.showBarcodeColumn ? '<td style="padding: 12px 15px; border-bottom: 1px solid #f1f1f1;">234567890123</td>' : ''}
+                                <td style="padding: 12px 15px; border-bottom: 1px solid #f1f1f1;">Electronics</td>
+                                <td style="padding: 12px 15px; border-bottom: 1px solid #f1f1f1;">950,000 MMK</td>
+                                <td style="padding: 12px 15px; border-bottom: 1px solid #f1f1f1;">5</td>
+                                <td style="padding: 12px 15px; border-bottom: 1px solid #f1f1f1;">
+                                    ${settings.showStockAlerts && 5 <= settings.lowStockThreshold ? '<span style="color: #F44336; font-weight: bold;">Low Stock</span>' : '<span style="color: #4CAF50;">In Stock</span>'}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 12px 15px; border-bottom: 1px solid #f1f1f1;">
+                                    ${settings.showProductImages ? '<div style="width: 40px; height: 40px; background: #e2e8f0; border-radius: 5px; display: inline-block; vertical-align: middle; margin-right: 10px;"></div>' : ''}
+                                    AirPods Pro
+                                </td>
+                                ${settings.showBarcodeColumn ? '<td style="padding: 12px 15px; border-bottom: 1px solid #f1f1f1;">345678901234</td>' : ''}
+                                <td style="padding: 12px 15px; border-bottom: 1px solid #f1f1f1;">Accessories</td>
+                                <td style="padding: 12px 15px; border-bottom: 1px solid #f1f1f1;">350,000 MMK</td>
+                                <td style="padding: 12px 15px; border-bottom: 1px solid #f1f1f1;">25</td>
+                                <td style="padding: 12px 15px; border-bottom: 1px solid #f1f1f1;">
+                                    <span style="color: #4CAF50;">In Stock</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                ` : settings.inventoryView === 'grid' ? `
+                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px;">
+                    <div style="background: white; border-radius: 8px; padding: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+                        ${settings.showProductImages ? '<div style="width: 100%; height: 120px; background: #e2e8f0; border-radius: 5px; margin-bottom: 10px;"></div>' : ''}
+                        <div style="font-weight: bold; margin-bottom: 5px;">iPhone 13</div>
+                        <div style="font-size: 14px; color: #666; margin-bottom: 5px;">Electronics</div>
+                        <div style="font-weight: bold; color: #5F9EA0; margin-bottom: 10px;">1,200,000 MMK</div>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div style="font-size: 14px;">Stock: 15</div>
+                            ${settings.showStockAlerts && 15 <= settings.lowStockThreshold ? '<div style="color: #F44336; font-size: 12px;">Low</div>' : ''}
+                        </div>
+                    </div>
+                    <div style="background: white; border-radius: 8px; padding: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+                        ${settings.showProductImages ? '<div style="width: 100%; height: 120px; background: #e2e8f0; border-radius: 5px; margin-bottom: 10px;"></div>' : ''}
+                        <div style="font-weight: bold; margin-bottom: 5px;">Samsung Galaxy S21</div>
+                        <div style="font-size: 14px; color: #666; margin-bottom: 5px;">Electronics</div>
+                        <div style="font-weight: bold; color: #5F9EA0; margin-bottom: 10px;">950,000 MMK</div>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div style="font-size: 14px;">Stock: 5</div>
+                            ${settings.showStockAlerts && 5 <= settings.lowStockThreshold ? '<div style="color: #F44336; font-size: 12px;">Low</div>' : ''}
+                        </div>
+                    </div>
+                    <div style="background: white; border-radius: 8px; padding: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+                        ${settings.showProductImages ? '<div style="width: 100%; height: 120px; background: #e2e8f0; border-radius: 5px; margin-bottom: 10px;"></div>' : ''}
+                        <div style="font-weight: bold; margin-bottom: 5px;">AirPods Pro</div>
+                        <div style="font-size: 14px; color: #666; margin-bottom: 5px;">Accessories</div>
+                        <div style="font-weight: bold; color: #5F9EA0; margin-bottom: 10px;">350,000 MMK</div>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div style="font-size: 14px;">Stock: 25</div>
+                            <div style="color: #4CAF50; font-size: 12px;">Good</div>
+                        </div>
+                    </div>
+                </div>
+                ` : `
+                <div style="background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+                    <div style="display: flex; padding: 15px; border-bottom: 1px solid #f1f1f1; align-items: center;">
+                        ${settings.showProductImages ? '<div style="width: 50px; height: 50px; background: #e2e8f0; border-radius: 5px; margin-right: 15px;"></div>' : ''}
+                        <div style="flex: 1;">
+                            <div style="font-weight: bold;">iPhone 13</div>
+                            <div style="font-size: 14px; color: #666;">Electronics</div>
+                        </div>
+                        <div style="text-align: right;">
+                            <div style="font-weight: bold; color: #5F9EA0;">1,200,000 MMK</div>
+                            <div style="font-size: 14px;">Stock: 15</div>
+                        </div>
+                    </div>
+                    <div style="display: flex; padding: 15px; border-bottom: 1px solid #f1f1f1; align-items: center;">
+                        ${settings.showProductImages ? '<div style="width: 50px; height: 50px; background: #e2e8f0; border-radius: 5px; margin-right: 15px;"></div>' : ''}
+                        <div style="flex: 1;">
+                            <div style="font-weight: bold;">Samsung Galaxy S21</div>
+                            <div style="font-size: 14px; color: #666;">Electronics</div>
+                        </div>
+                        <div style="text-align: right;">
+                            <div style="font-weight: bold; color: #5F9EA0;">950,000 MMK</div>
+                            <div style="font-size: 14px;">Stock: 5</div>
+                        </div>
+                    </div>
+                    <div style="display: flex; padding: 15px; align-items: center;">
+                        ${settings.showProductImages ? '<div style="width: 50px; height: 50px; background: #e2e8f0; border-radius: 5px; margin-right: 15px;"></div>' : ''}
+                        <div style="flex: 1;">
+                            <div style="font-weight: bold;">AirPods Pro</div>
+                            <div style="font-size: 14px; color: #666;">Accessories</div>
+                        </div>
+                        <div style="text-align: right;">
+                            <div style="font-weight: bold; color: #5F9EA0;">350,000 MMK</div>
+                            <div style="font-size: 14px;">Stock: 25</div>
+                        </div>
+                    </div>
+                </div>
+                `}
+                
+                <div style="margin-top: 15px; display: flex; justify-content: space-between; align-items: center;">
+                    <div style="font-size: 14px; color: #666;">Showing 3 of 150 products</div>
+                    <div style="display: flex; gap: 5px;">
+                        <button style="padding: 5px 10px; background: white; border: 1px solid #ddd; border-radius: 3px;">1</button>
+                        <button style="padding: 5px 10px; background: #5F9EA0; color: white; border: none; border-radius: 3px;">2</button>
+                        <button style="padding: 5px 10px; background: white; border: 1px solid #ddd; border-radius: 3px;">3</button>
+                        <button style="padding: 5px 10px; background: white; border: 1px solid #ddd; border-radius: 3px;">Next</button>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        modalPreviewArea.innerHTML = inventoryHtml;
+    }
+
+    function generateLoginPreview(settings) {
+        const loginHtml = `
+            <div style="background: ${settings.loginBgColor}; min-height: 300px; padding: 20px; display: flex; align-items: center; justify-content: center; width: 100%;">
+                <div style="background: ${settings.loginFormBg}; padding: 30px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); width: 100%; max-width: 400px;">
+                    ${settings.showLoginLogo ? `
+                    <div style="text-align: center; margin-bottom: 20px;">
+                        <div style="width: 80px; height: 80px; background: #5F9EA0; border-radius: 10px; margin: 0 auto 10px; display: flex; align-items: center; justify-content: center; color: white; font-size: 24px;">
+                            <i class="fas fa-store"></i>
+                        </div>
+                        <h2 style="margin: 0;">POS System</h2>
+                    </div>
+                    ` : ''}
+                    
+                    <div style="margin-bottom: 15px;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: bold;">Username</label>
+                        <input type="text" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;" placeholder="Enter username">
+                    </div>
+                    
+                    <div style="margin-bottom: 15px;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: bold;">Password</label>
+                        <input type="password" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;" placeholder="Enter password">
+                    </div>
+                    
+                    ${settings.showRememberMe ? `
+                    <div style="margin-bottom: 15px; display: flex; align-items: center;">
+                        <input type="checkbox" id="remember" style="margin-right: 8px;">
+                        <label for="remember">Remember me</label>
+                    </div>
+                    ` : ''}
+                    
+                    <button style="width: 100%; padding: 12px; background: ${settings.loginBtnColor}; color: white; border: none; border-radius: 5px; font-weight: bold; cursor: pointer;">
+                        Sign In
+                    </button>
+                    
+                    ${settings.showSocialLogin ? `
+                    <div style="text-align: center; margin-top: 20px; position: relative;">
+                        <div style="position: absolute; top: 50%; left: 0; right: 0; height: 1px; background: #ddd;"></div>
+                        <span style="background: white; padding: 0 10px; position: relative;">Or continue with</span>
+                    </div>
+                    
+                    <div style="display: flex; gap: 10px; margin-top: 15px;">
+                        <button style="flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 5px; background: white; cursor: pointer;">
+                            <i class="fab fa-google" style="color: #DB4437;"></i> Google
+                        </button>
+                        <button style="flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 5px; background: white; cursor: pointer;">
+                            <i class="fab fa-facebook" style="color: #4267B2;"></i> Facebook
+                        </button>
+                    </div>
+                    ` : ''}
+                </div>
+            </div>
+        `;
+        
+        modalPreviewArea.innerHTML = loginHtml;
+    }
+
+    function generateReportPreview(settings) {
+        const reportHtml = `
+            <div style="background: #f8fafc; min-height: 300px; padding: 20px; width: 100%;">
+                <h3 style="margin-top: 0;">${settings.defaultReportType.charAt(0).toUpperCase() + settings.defaultReportType.slice(1)} Report Preview</h3>
+                
+                <div style="margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center;">
+                    <div style="display: flex; gap: 10px;">
+                        <button style="padding: 8px 15px; background: #5F9EA0; color: white; border: none; border-radius: 5px;">Generate Report</button>
+                        <button style="padding: 8px 15px; background: white; border: 1px solid #ddd; border-radius: 5px;">Export as ${settings.exportFormat.toUpperCase()}</button>
+                    </div>
+                    <div style="display: flex; gap: 10px;">
+                        <select style="padding: 8px 15px; border: 1px solid #ddd; border-radius: 5px;">
+                            <option>${settings.defaultDateRange.charAt(0).toUpperCase() + settings.defaultDateRange.slice(1)}</option>
+                        </select>
+                    </div>
+                </div>
+                
+                ${settings.showSummary ? `
+                <div style="background: white; border-radius: 8px; padding: 15px; margin-bottom: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+                    <h4 style="margin-top: 0;">Summary</h4>
+                    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px;">
+                        <div style="text-align: center;">
+                            <div style="font-size: 24px; font-weight: bold; color: #5F9EA0;">450,000</div>
+                            <div style="font-size: 14px; color: #666;">Total Sales (MMK)</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="font-size: 24px; font-weight: bold; color: #4CAF50;">42</div>
+                            <div style="font-size: 14px; color: #666;">Products Sold</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="font-size: 24px; font-weight: bold; color: #FF9800;">8</div>
+                            <div style="font-size: 14px; color: #666;">Transactions</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="font-size: 24px; font-weight: bold; color: #F44336;">3</div>
+                            <div style="font-size: 14px; color: #666;">Low Stock Items</div>
+                        </div>
+                    </div>
+                </div>
+                ` : ''}
+                
+                <div style="display: flex; gap: 20px;">
+                    <div style="flex: ${settings.showCharts ? '7' : '12'};">
+                        <div style="background: white; border-radius: 8px; padding: 15px; margin-bottom: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+                            <h4 style="margin-top: 0;">${settings.defaultReportType.charAt(0).toUpperCase() + settings.defaultReportType.slice(1)} Data</h4>
+                            <table style="width: 100%; border-collapse: collapse;">
+                                <thead style="background: #f8fafc;">
+                                    <tr>
+                                        <th style="padding: 10px 15px; text-align: left; border-bottom: 1px solid #e2e8f0;">Date</th>
+                                        <th style="padding: 10px 15px; text-align: left; border-bottom: 1px solid #e2e8f0;">Product</th>
+                                        <th style="padding: 10px 15px; text-align: left; border-bottom: 1px solid #e2e8f0;">Quantity</th>
+                                        <th style="padding: 10px 15px; text-align: left; border-bottom: 1px solid #e2e8f0;">Amount (MMK)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td style="padding: 10px 15px; border-bottom: 1px solid #f1f1f1;">2023-10-01</td>
+                                        <td style="padding: 10px 15px; border-bottom: 1px solid #f1f1f1;">iPhone 13</td>
+                                        <td style="padding: 10px 15px; border-bottom: 1px solid #f1f1f1;">2</td>
+                                        <td style="padding: 10px 15px; border-bottom: 1px solid #f1f1f1;">2,400,000</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding: 10px 15px; border-bottom: 1px solid #f1f1f1;">2023-10-01</td>
+                                        <td style="padding: 10px 15px; border-bottom: 1px solid #f1f1f1;">Samsung Galaxy S21</td>
+                                        <td style="padding: 10px 15px; border-bottom: 1px solid #f1f1f1;">1</td>
+                                        <td style="padding: 10px 15px; border-bottom: 1px solid #f1f1f1;">950,000</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding: 10px 15px; border-bottom: 1px solid #f1f1f1;">2023-10-02</td>
+                                        <td style="padding: 10px 15px; border-bottom: 1px solid #f1f1f1;">AirPods Pro</td>
+                                        <td style="padding: 10px 15px; border-bottom: 1px solid #f1f1f1;">3</td>
+                                        <td style="padding: 10px 15px; border-bottom: 1px solid #f1f1f1;">1,050,000</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    ${settings.showCharts ? `
+                    <div style="flex: 5;">
+                        <div style="background: white; border-radius: 8px; padding: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+                            <h4 style="margin-top: 0;">${settings.chartType.charAt(0).toUpperCase() + settings.chartType.slice(1)} Chart</h4>
+                            <div style="height: 250px; display: flex; align-items: flex-end; justify-content: space-around; padding: 10px;">
+                                <div style="display: flex; flex-direction: column; align-items: center;">
+                                    <div style="width: 40px; height: 70%; background: ${settings.reportColorScheme === 'default' ? '#5F9EA0' : settings.reportColorScheme === 'monochrome' ? '#666' : '#a8d5e5'}; margin-bottom: 5px;"></div>
+                                    <div style="font-size: 12px;">iPhone</div>
+                                </div>
+                                <div style="display: flex; flex-direction: column; align-items: center;">
+                                    <div style="width: 40px; height: 50%; background: ${settings.reportColorScheme === 'default' ? '#4CAF50' : settings.reportColorScheme === 'monochrome' ? '#888' : '#b8e6b8'}; margin-bottom: 5px;"></div>
+                                    <div style="font-size: 12px;">Samsung</div>
+                                </div>
+                                <div style="display: flex; flex-direction: column; align-items: center;">
+                                    <div style="width: 40px; height: 30%; background: ${settings.reportColorScheme === 'default' ? '#FF9800' : settings.reportColorScheme === 'monochrome' ? '#aaa' : '#ffe0b2'}; margin-bottom: 5px;"></div>
+                                    <div style="font-size: 12px;">AirPods</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    ` : ''}
+                </div>
+            </div>
+        `;
+        
+        modalPreviewArea.innerHTML = reportHtml;
+    }
+
+    // Section selector functionality
+    const sectionSelector = document.getElementById('sectionSelector');
+    const sectionContents = document.querySelectorAll('.section-content');
+
+    sectionSelector.addEventListener('change', function() {
+        const selectedSection = this.value;
+        
+        // Hide all section contents
+        sectionContents.forEach(section => {
+            section.style.display = 'none';
+        });
+        
+        // Show selected section
+        const selectedSectionElement = document.getElementById(`${selectedSection}-section`);
+        if (selectedSectionElement) {
+            selectedSectionElement.style.display = 'block';
+        }
+    });
+
+    // Template selector functionality
+    const templateOptions = document.querySelectorAll('.color-option[data-template]');
+
+    templateOptions.forEach(option => {
+        option.addEventListener('click', function() {
+            // Remove active class from all options
+            templateOptions.forEach(opt => opt.classList.remove('active'));
+            
+            // Add active class to clicked option
+            this.classList.add('active');
+            
+            const template = this.getAttribute('data-template');
+            applyTemplate(template);
+        });
+    });
+
+    function applyTemplate(template) {
+        let primaryColor, primaryLight, primaryDark;
+        
+        switch(template) {
+            case 'default':
+                primaryColor = '#5F9EA0';
+                primaryLight = '#8abbbd';
+                primaryDark = '#4a7c7e';
+                break;
+            case 'green':
+                primaryColor = '#4CAF50';
+                primaryLight = '#81C784';
+                primaryDark = '#388E3C';
+                break;
+            case 'blue':
+                primaryColor = '#2196F3';
+                primaryLight = '#64B5F6';
+                primaryDark = '#1976D2';
+                break;
+            default:
+                primaryColor = '#5F9EA0';
+                primaryLight = '#8abbbd';
+                primaryDark = '#4a7c7e';
+        }
+        
+        // Update CSS variables
+        document.documentElement.style.setProperty('--primary-color', primaryColor);
+        document.documentElement.style.setProperty('--primary-light', primaryLight);
+        document.documentElement.style.setProperty('--primary-dark', primaryDark);
+        
+        // Update UI elements
+        const mainHeader = document.querySelector('.main-header');
+        if(mainHeader) mainHeader.style.backgroundColor = primaryColor;
+        
+        const sidebar = document.querySelector('.sidebar');
+        if(sidebar) sidebar.style.backgroundColor = primaryColor;
+        
+        // Update color inputs in customize sections
+        const colorInputs = document.querySelectorAll('input[type="color"]');
+        colorInputs.forEach(input => {
+            if(input.id.includes('HeaderColor') || input.id.includes('BtnColor')) {
+                input.value = primaryColor;
+            }
+        });
+    }
+
+    // Initialize section selector
+    sectionSelector.dispatchEvent(new Event('change'));
+});
+</script>
+</body>
+</html>
